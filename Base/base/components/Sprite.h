@@ -3,11 +3,11 @@
 #include "compdef.h"
 #include "Transform.h"
 
+
 namespace sfw
 {
-	void sfw::drawTextureMatrix3(unsigned, unsigned, unsigned, const float[9], float);
+void drawTextureMatrix3(unsigned, unsigned, unsigned, const float[9], float);
 }
-
 
 namespace base
 {

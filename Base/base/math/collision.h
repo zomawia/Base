@@ -31,8 +31,10 @@ collision collides(const hull &A, const hull &B)
 
 	collision retval = collision{ INFINITY };
 
-	for each(auto axis in axes)
+	for(int i = 0; i < size; ++i)
 	{
+		auto &axis = axes[i];
+
 		float pDl = A.max(axis) - B.min(axis);
 		float pDr = B.max(axis) - A.min(axis);	
 

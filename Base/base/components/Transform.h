@@ -32,6 +32,9 @@ public:
 	~Transform()
 	{
 		// free children
+		for (int i = 0; i < TRANS_MAX_CHILDREN; ++i)
+			if (m_children[i] != nullptr)
+				removeChild(m_children[i], true);
 	}
 
 	bool removeChild(Transform *child, bool keepGlobal = false)
@@ -92,6 +95,8 @@ public:
 	void setGlobalPosition(const vec2 &P) { m_localPosition = (getGlobalToLocal() * vec3(P, 1)).xy; }
 	void setGlobalScale(const vec2 &S)    { m_localScale    = (getGlobalToLocal() * vec3(S, 0)).xy; }
 	void setGlobalAngle(float a)				{ m_localAngle    = (getGlobalToLocal() * vec3(vec2::fromAngle(a),0)).xy.angle(); }
+
+	vec2 getGlobalUp() const { return getGlobalTransform().c2.xy; }
 
 	vec2 getGlobalPosition()  const { return getGlobalTransform().getTrans2D(); }
 	vec2 getGlobalScale()		const { return getGlobalTransform().getScale2D(); }

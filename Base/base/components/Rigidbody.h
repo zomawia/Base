@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Transform.h"
+#include "Collider.h"
 
 namespace base
 {
@@ -38,7 +39,48 @@ public:
 		T->setGlobalAngle(T->getGlobalAngle() + angularVelocity * dt);
 		angularAcceleration = -angularVelocity * angularDrag;
 		spin = torque = 0;
+
+
 	}
 };
+
+	
+inline void DynamicResolution(const collision &cd, Transform *AT, Rigidbody *AR, Transform *BT, Rigidbody *BR, float bounciness = 1)
+{
+	vec2 MTV = cd.penetration * cd.normal;
+	
+	float am = (AR->mass * AR->velocity).magnitude();
+	float bm = (BR->mass * BR->velocity).magnitude();
+	float cm = am + bm;							 
+
+	AT->setGlobalPosition(AT->getGlobalPosition() - MTV * (1 - am / cm));
+	BT->setGlobalPosition(BT->getGlobalPosition() + MTV * (1 - bm / cm));
+
+	vec2  A = AR->velocity;	
+	float P = AR->mass;		
+	vec2  X;				
+
+	vec2  B = BR->velocity;
+	float Q = BR->mass;	
+	vec2  Y;			
+
+	float E = bounciness;
+
+	X = (A*P + B*Q + -E*(A - B)*Q) / (Q + P);
+	Y = E*(A - B) + X;
+
+	AR->velocity = X;
+	BR->velocity = Y;
+}
+
+
+inline void StaticResolution(const collision &cd, Transform *AT, Rigidbody *AR, float bounciness = 1)
+{
+	vec2 MTV = cd.penetration * cd.normal;
+	AT->setGlobalPosition(AT->getGlobalPosition() - MTV);
+
+	AR->velocity = reflect(AR->velocity, cd.normal) * bounciness;
+}
+
 
 }

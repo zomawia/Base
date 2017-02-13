@@ -14,5 +14,5 @@ public:
 	virtual size_t next() const = 0; // called every frame
 	
 	virtual void step() {} // called every frame
-	virtual void draw() const {} // called every frame
+	virtual void draw() {} // called every frame
 };

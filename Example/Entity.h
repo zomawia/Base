@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../Components.h"
-#include "../Data.h"
+#include "../Base/Base.h"
+
+#include "PlayerController.h"
 
 using namespace base;
 
@@ -15,6 +16,8 @@ public:
 	ObjectPool<Sprite>::iterator sprite;
 	ObjectPool<Camera>::iterator camera;
 
+	ObjectPool<PlayerController>::iterator controller;
+
 	~Entity()
 	{
 		transform.free();
@@ -23,5 +26,6 @@ public:
 		sprite.free();
 		lifetime.free();
 		camera.free();
+		controller.free();
 	}
 };

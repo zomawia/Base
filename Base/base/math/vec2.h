@@ -55,7 +55,7 @@ inline float cross(const vec2 &a, const vec2 &b, bool left = true) { return dot(
 inline float dist(const vec2 &a, const vec2 &b) { return (a - b).magnitude(); }
 
 inline vec2 project(const vec2 &a, const vec2 &b) { auto d = b.normal(); return d * dot(a, d); }
-inline vec2 reflect(const vec2 &a, const vec2 &b) { 2 * project(a, b) - a; }
+inline vec2 reflect(const vec2 &a, const vec2 &b) { return 2 * project(a, b) - a; }
 
 inline vec2 min(const vec2 &a, const vec2 &b) { return vec2{ flops::min(a.x,b.x), flops::min(a.y,b.y) }; }
 inline vec2 max(const vec2 &a, const vec2 &b) { return vec2{ flops::max(a.x,b.x), flops::max(a.y,b.y) }; }

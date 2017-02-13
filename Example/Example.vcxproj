@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{33CAAC7A-BE0B-4A2F-A52F-B5B3C8BA8D67}</ProjectGuid>
-    <RootNamespace>Base</RootNamespace>
+    <ProjectGuid>{23E16367-B8B8-4953-89B2-5B05FF86672E}</ProjectGuid>
+    <RootNamespace>Example</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -75,6 +75,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../sfw/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfw_deb.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -82,6 +86,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../sfw/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfw_deb.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -94,6 +102,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../sfw/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfw_rel.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -107,31 +117,18 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../sfw/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfw_rel.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Base.h" />
-    <ClInclude Include="base\Components.h" />
-    <ClInclude Include="base\components\Camera.h" />
-    <ClInclude Include="base\components\Collider.h" />
-    <ClInclude Include="base\components\compdef.h" />
-    <ClInclude Include="base\components\Lifetime.h" />
-    <ClInclude Include="base\components\Rigidbody.h" />
-    <ClInclude Include="base\components\Sprite.h" />
-    <ClInclude Include="base\components\Transform.h" />
-    <ClInclude Include="base\Data.h" />
-    <ClInclude Include="base\data\ObjectPool.h" />
-    <ClInclude Include="BaseState.h" />
-    <ClInclude Include="base\Maths.h" />
-    <ClInclude Include="base\math\aabb.h" />
-    <ClInclude Include="base\math\collision.h" />
-    <ClInclude Include="base\math\flops.h" />
-    <ClInclude Include="base\math\hull.h" />
-    <ClInclude Include="base\math\mat3.h" />
-    <ClInclude Include="base\math\mathdef.h" />
-    <ClInclude Include="base\math\rand.h" />
-    <ClInclude Include="base\math\vec2.h" />
-    <ClInclude Include="base\math\vec3.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="PlayerController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
