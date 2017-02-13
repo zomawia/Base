@@ -3,8 +3,10 @@
 #include "Entity.h"
 
 class Factory
-{
+{	
 	ObjectPool<Entity>	  entities;
+	
+	// The factory will store an object pool for each component type
 	ObjectPool<Transform> transforms;
 	ObjectPool<Rigidbody> rigidbodies;
 	ObjectPool<Collider>  colliders;
@@ -15,17 +17,21 @@ class Factory
 	ObjectPool<PlayerController> controllers;
 
 public:
-	ObjectPool<Entity>::iterator currentCamera;
 
+	// iterators to access the entity pool
 	ObjectPool<Entity>::iterator begin() { return entities.begin(); }
 	ObjectPool<Entity>::iterator end() { return entities.end(); }
 
+	// for now, they're all the same size
 	Factory(size_t size = 512)
 								: entities(size), transforms(size), rigidbodies(size),
 								  colliders(size), sprites(size), lifetimes(size),
 								  cameras(size), controllers(size), texts(size)
 	{
 	}
+
+	// What follows are specialized spawning functions
+	// just observe the steps taken and replicate for your own usages
 
 	ObjectPool<Entity>::iterator spawnCamera(float w2, float h2, float zoom)
 	{

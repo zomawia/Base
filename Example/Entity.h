@@ -1,10 +1,11 @@
 #pragma once
 
-#include "../Base/Base.h"
+#include "Base.h"
 
 #include "PlayerController.h"
 
 using namespace base;
+
 
 class Entity
 {
@@ -17,17 +18,19 @@ public:
 	ObjectPool<Camera>::iterator camera;
 	ObjectPool<Text>::iterator text;
 
+	// example of a component in this project
 	ObjectPool<PlayerController>::iterator controller;
 
-	~Entity()
+	void onFree()
 	{
 		transform.free();
 		rigidbody.free();
 		collider.free();
-		sprite.free();
 		lifetime.free();
+		sprite.free();
 		camera.free();
 		text.free();
+
 		controller.free();
 	}
 };

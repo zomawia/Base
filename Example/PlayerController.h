@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../sfw/sfwdraw.h"
-#include "../Base/base/Components.h"
+#include "Base.h"
 
 class PlayerController
 {
