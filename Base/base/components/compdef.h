@@ -16,11 +16,7 @@
 #endif
 
 
-namespace sfw
-{
-	void sfw::drawLine(float, float, float, float, unsigned, const float[16]);
-	void drawTextureMatrix3(unsigned, unsigned, unsigned, const float[9], float);
-}
+#include "../../../sfw/sfwdraw.h"
 
 namespace base
 {

@@ -15,6 +15,7 @@ public:
 	ObjectPool<Lifetime>::iterator lifetime;
 	ObjectPool<Sprite>::iterator sprite;
 	ObjectPool<Camera>::iterator camera;
+	ObjectPool<Text>::iterator text;
 
 	ObjectPool<PlayerController>::iterator controller;
 
@@ -26,6 +27,7 @@ public:
 		sprite.free();
 		lifetime.free();
 		camera.free();
+		text.free();
 		controller.free();
 	}
 };

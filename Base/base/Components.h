@@ -10,3 +10,4 @@
 #include "components\Lifetime.h"
 #include "components\Sprite.h"
 #include "components\Camera.h"
+#include "components\Text.h"

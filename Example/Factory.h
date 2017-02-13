@@ -11,6 +11,7 @@ class Factory
 	ObjectPool<Sprite>    sprites;
 	ObjectPool<Lifetime>  lifetimes;
 	ObjectPool<Camera>    cameras;
+	ObjectPool<Text>	  texts;
 	ObjectPool<PlayerController> controllers;
 
 public:
@@ -22,7 +23,7 @@ public:
 	Factory(size_t size = 512)
 								: entities(size), transforms(size), rigidbodies(size),
 								  colliders(size), sprites(size), lifetimes(size),
-								  cameras(size), controllers(size)
+								  cameras(size), controllers(size), texts(size)
 	{
 	}
 
@@ -71,7 +72,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite)
+	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font)
 	{
 		auto e = entities.push();
 
@@ -80,8 +81,13 @@ public:
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
 		e->controller = controllers.push();
+		e->text = texts.push();
 
-	
+		e->text->sprite_id = font;
+		e->text->offset = vec2{ -24,-24 };
+		e->text->off_scale = vec2{.5f,.5f};
+		e->text->setString("Player1");
+
 		e->transform->setLocalScale(vec2{48,48});
 
 		e->sprite->sprite_id = sprite;

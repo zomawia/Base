@@ -8,7 +8,7 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_ship, spr_bullet, spr_roid;
+	unsigned spr_space, spr_ship, spr_bullet, spr_roid, spr_font;
 
 public:
 	virtual void init()
@@ -17,6 +17,7 @@ public:
 		spr_space = sfw::loadTextureMap("../res/space.jpg");
 		spr_ship = sfw::loadTextureMap("../res/ship.png");
 		spr_roid = sfw::loadTextureMap("../res/rock.png");
+		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 	}
 
 	virtual void play()
@@ -25,7 +26,7 @@ public:
 		factory.currentCamera = factory.spawnCamera(800, 600, 1);
 		factory.currentCamera->transform->setGlobalPosition(vec2{ 400, 300 });	
 
-		factory.spawnPlayer(spr_ship);
+		factory.spawnPlayer(spr_ship, spr_font);
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
 		factory.spawnAsteroid(spr_roid);
@@ -104,6 +105,12 @@ public:
 				e.sprite->draw(&e.transform, cam);
 
 		for each(auto &e in factory)
+			if (e.transform && e.text)
+				e.text->draw(&e.transform, cam);
+
+
+#ifdef _DEBUG
+		for each(auto &e in factory)
 			if (e.transform)
 				e.transform->draw(cam);
 
@@ -114,5 +121,6 @@ public:
 		for each(auto &e in factory)
 			if (e.transform && e.rigidbody)
 				e.rigidbody->draw(&e.transform, cam);
+#endif
 	}
 };
