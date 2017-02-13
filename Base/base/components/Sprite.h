@@ -4,11 +4,6 @@
 #include "Transform.h"
 
 
-namespace sfw
-{
-void drawTextureMatrix3(unsigned, unsigned, unsigned, const float[9], float);
-}
-
 namespace base
 {
 // The sprite will always be attached to the

@@ -62,6 +62,7 @@ public:
 		e->transform->setLocalAngle(ang);
 
 		e->sprite->sprite_id = sprite;
+		e->sprite->dimensions = vec2{1.2f, 1.2f};
 
 		e->rigidbody->addImpulse(e->transform->getGlobalUp() * impulse);
 

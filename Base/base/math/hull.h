@@ -132,7 +132,6 @@ struct hull
 
 hull operator*(const mat3 &M, hull A)
 {
-	for each(auto &pos in A.points)
 	for(int i = 0; i < A.size; ++i)
 	{
 		A.points[i]  = (M * vec3(A.points[i], 1)).xy;

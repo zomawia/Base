@@ -42,6 +42,16 @@ public:
 
 
 	}
+
+	void draw(const Transform *T, const mat3 &cam)
+	{
+		auto glob = cam * T->getGlobalTransform();
+		vec2 tvel = (cam * vec3(velocity, 0)).xy;
+		vec2 tacc = (cam * vec3(acceleration, 0)).xy;
+
+		debugDrawLine(glob.c3.xy, glob.c3.xy+tvel, 0xff00ffff);
+		debugDrawLine(glob.c3.xy, glob.c3.xy+tacc, 0x00ffffff);
+	}
 };
 
 	
@@ -53,8 +63,8 @@ inline void DynamicResolution(const collision &cd, Transform *AT, Rigidbody *AR,
 	float bm = (BR->mass * BR->velocity).magnitude();
 	float cm = am + bm;							 
 
-	AT->setGlobalPosition(AT->getGlobalPosition() - MTV * (1 - am / cm));
-	BT->setGlobalPosition(BT->getGlobalPosition() + MTV * (1 - bm / cm));
+	AT->setGlobalPosition(AT->getGlobalPosition() + MTV * (1 - am / cm));
+	BT->setGlobalPosition(BT->getGlobalPosition() - MTV * (1 - bm / cm));
 
 	vec2  A = AR->velocity;	
 	float P = AR->mass;		

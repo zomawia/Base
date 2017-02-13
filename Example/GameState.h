@@ -45,8 +45,11 @@ public:
 
 		// maybe spawn some asteroids here.
 
-		for each(auto &e in factory)
+		for(auto it = factory.begin(); it != factory.end();)
 		{
+			bool del = false;
+			auto &e = *it;
+
 			if (e.transform && e.rigidbody)
 				e.rigidbody->integrate(&e.transform, dt);
 
@@ -55,13 +58,18 @@ public:
 				e.controller->poll(&e.transform, &e.rigidbody, dt);
 				if (e.controller->shotRequest)
 				{
-					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition(), vec2{ 32,32 }, e.transform->getGlobalAngle(), 10, 1);
+					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
+											vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
 				}
 			}
 			if (e.lifetime)
+			{
 				e.lifetime->age(dt);
-
-		
+				if (!e.lifetime->isAlive())
+					del = true;
+			}
+			if (!del) it++;
+			else it.free();
 		}
 
 
@@ -88,8 +96,23 @@ public:
 
 	virtual void draw()	
 	{
+		auto cam = factory.currentCamera->camera->getCameraMatrix(&factory.currentCamera->transform);
+
+		
 		for each(auto &e in factory)
 			if (e.transform && e.sprite)
-				e.sprite->draw(&e.transform, factory.currentCamera->camera->getCameraMatrix(&factory.currentCamera->transform));
+				e.sprite->draw(&e.transform, cam);
+
+		for each(auto &e in factory)
+			if (e.transform)
+				e.transform->draw(cam);
+
+		for each(auto &e in factory)
+			if (e.transform && e.collider)
+				e.collider->draw(&e.transform, cam);
+
+		for each(auto &e in factory)
+			if (e.transform && e.rigidbody)
+				e.rigidbody->draw(&e.transform, cam);
 	}
 };

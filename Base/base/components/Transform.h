@@ -4,8 +4,11 @@
 #include <iostream>
 
 
+
 namespace base
 {
+	
+	
 class Transform
 {
 private:
@@ -27,6 +30,14 @@ private:
 		m_localAngle	= res.getAngle2D();
 	}
 public:
+	void draw(const mat3 &cam) const
+	{
+		auto t = cam * getGlobalTransform();
+
+		debugDrawLine(t.c3.xy, t.c2.xy + t.c3.xy,0x00ff00ff);
+		debugDrawLine(t.c3.xy, t.c1.xy + t.c3.xy,0xff0000ff);
+	}
+
 	Transform() : m_parent(nullptr), m_localScale(1), m_localAngle(0) { memset(m_children, 0, sizeof(m_children)); }
 
 	~Transform()
@@ -96,7 +107,7 @@ public:
 	void setGlobalScale(const vec2 &S)    { m_localScale    = (getGlobalToLocal() * vec3(S, 0)).xy; }
 	void setGlobalAngle(float a)				{ m_localAngle    = (getGlobalToLocal() * vec3(vec2::fromAngle(a),0)).xy.angle(); }
 
-	vec2 getGlobalUp() const { return getGlobalTransform().c2.xy; }
+	vec2 getGlobalUp() const { return getGlobalTransform().c2.xy.normal(); }
 
 	vec2 getGlobalPosition()  const { return getGlobalTransform().getTrans2D(); }
 	vec2 getGlobalScale()		const { return getGlobalTransform().getScale2D(); }
