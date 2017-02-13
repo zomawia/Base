@@ -110,6 +110,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Base.h" />
+    <ClInclude Include="base\Components.h" />
+    <ClInclude Include="base\components\Camera.h" />
+    <ClInclude Include="base\components\Collider.h" />
+    <ClInclude Include="base\components\compdef.h" />
+    <ClInclude Include="base\components\Lifetime.h" />
+    <ClInclude Include="base\components\Rigidbody.h" />
+    <ClInclude Include="base\components\Sprite.h" />
+    <ClInclude Include="base\components\Transform.h" />
+    <ClInclude Include="base\Data.h" />
+    <ClInclude Include="base\data\ObjectPool.h" />
+    <ClInclude Include="base\entity\BaseState.h" />
+    <ClInclude Include="base\entity\Entity.h" />
+    <ClInclude Include="base\entity\Factory.h" />
+    <ClInclude Include="base\Maths.h" />
+    <ClInclude Include="base\math\aabb.h" />
+    <ClInclude Include="base\math\collision.h" />
+    <ClInclude Include="base\math\flops.h" />
+    <ClInclude Include="base\math\hull.h" />
+    <ClInclude Include="base\math\mat3.h" />
+    <ClInclude Include="base\math\mathdef.h" />
+    <ClInclude Include="base\math\rand.h" />
+    <ClInclude Include="base\math\vec2.h" />
+    <ClInclude Include="base\math\vec3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
