@@ -6,6 +6,10 @@ class Lifetime
 	float m_lifetime;
 public:
 	float lifespan;
+	float moveSpeed;
+	float eatSpeed;
+	float weight;
+	float scale;
 
 	Lifetime(float a_span = 1) : lifespan(a_span), m_lifetime(0) {}
 

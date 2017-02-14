@@ -6,20 +6,36 @@ class CameraController
 {
 
 public:
-	float speed = 20;
+	float speed = 5;
 
 	void poll(base::Transform *T, base::Rigidbody *rb)
 	{
-		if (sfw::getKey('W'))
-			rb->addForce(T->getGlobalUp() * speed);
+		rb->drag = 25;
 		
-		if (sfw::getKey('A'))
-			rb->addForce(T->getGlobalUp().left() * speed);
+		if (sfw::getKey('W')) {
+			rb->addImpulse(T->getGlobalUp() * speed);
+			rb->drag = 0;
+		}
 
-		if (sfw::getKey('D'))
-			rb->addForce(T->getGlobalUp().right() * speed);
+		if (sfw::getKey('A')) {
+			rb->addImpulse(T->getGlobalUp().left() * speed);
+			rb->drag = 0;
+		}
 
-		if (sfw::getKey('S'))
-			rb->addForce(T->getGlobalUp() * -speed);
+		if (sfw::getKey('D')) {
+			rb->addImpulse(T->getGlobalUp().right() * speed);
+			rb->drag = 0;
+		}
+
+		if (sfw::getKey('S')) {
+			rb->addImpulse(T->getGlobalUp() * -speed);
+			rb->drag = 0;
+		}
+		
+		//bounds
+		if (T->getGlobalPosition().y < 0) T->setGlobalPosition({ T->getGlobalPosition().x, 0 });
+		if (T->getGlobalPosition().y > 200) T->setGlobalPosition({ T->getGlobalPosition().x, 200 });
+		if (T->getGlobalPosition().x > 1600) T->setGlobalPosition({ 1600, T->getGlobalPosition().y });
+		if (T->getGlobalPosition().x < 0) T->setGlobalPosition({ 0, T->getGlobalPosition().y });
 	}
 };

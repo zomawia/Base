@@ -54,6 +54,7 @@ public:
 		e->sprite = sprites.push();
 		e->sprite->sprite_id = sprite;
 		e->sprite->dimensions = vec2{w,h};
+	//	e->sprite->tint = WHITE;
 		e->transform->setLocalPosition(vec2{ x,y });	
 		return e;
 	}
@@ -110,7 +111,7 @@ public:
 	}
 
 
-	ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite, bool isScaled = false)
+	ObjectPool<Entity>::iterator spawnTree(unsigned sprite, bool isScaled = true)
 	{
 		auto e = entities.push();
 
@@ -120,10 +121,62 @@ public:
 		e->collider = colliders.push();
 
 		e->transform->setLocalScale(vec2{ 48,48 });
+		
+		//e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
+		
+		e->transform->setGlobalPosition(vec2{ randomRange(-800, 800), randomRange(-900, 0) });
 
-		e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
+		//e->rigidbody->addSpin(rand01()*12-6);
 
-		e->rigidbody->addSpin(rand01()*12-6);
+		e->sprite->sprite_id = sprite;
+		//e->sprite->tint = GREEN;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnRock(unsigned sprite, bool isScaled = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalScale(vec2{ 12,12 });
+
+		//e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
+
+		e->transform->setGlobalPosition(vec2{ randomRange(-800, 800), randomRange(-900, 0) });
+
+		//e->rigidbody->addSpin(rand01()*12-6);
+
+		e->sprite->sprite_id = sprite;
+		//e->sprite->tint = GREEN;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnAnimal(unsigned sprite, bool isScaled = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalScale(vec2{ 30,20 });
+
+		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-900, -100) });
 
 		e->sprite->sprite_id = sprite;
 
@@ -134,6 +187,17 @@ public:
 		return e;
 	}
 
+	ObjectPool<Entity>::iterator spawnTransform(vec2 pos, vec2 dim, float rot)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->transform->setGlobalPosition(pos);
+		e->transform->setGlobalScale(dim);
+		e->transform->setGlobalAngle(rot);
+
+		return e;
+	}
 
 };
 

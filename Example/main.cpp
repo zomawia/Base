@@ -1,6 +1,7 @@
 
 #include "sfwdraw.h"
 #include "GameState.h"
+#include <time.h>
 
 
 /*
@@ -10,8 +11,9 @@
 */
 void main()
 {
-	sfw::initContext();
+	sfw::initContext(1600U, 900);
 
+	srand(time(0));
 
 	GameState gs;
 

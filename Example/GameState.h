@@ -19,16 +19,24 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_ship, spr_bullet, spr_roid, spr_font;
+	unsigned spr_space, spr_ship, 
+		spr_tree1, spr_tree2,
+		spr_rock1, spr_rock2,
+		spr_animal, spr_font;
 	ObjectPool<Entity>::iterator currentCamera;
+
 
 public:
 	virtual void init()
 	{
-		spr_bullet = sfw::loadTextureMap("../res/bullet.png");
-		spr_space = sfw::loadTextureMap("../res/space.jpg");
+		//spr_bullet = sfw::loadTextureMap("../res/bullet.png");
+		spr_rock1 = sfw::loadTextureMap("../res/rock1.png");
+		spr_rock2 = sfw::loadTextureMap("../res/rock2.png");
+		spr_tree1 = sfw::loadTextureMap("../res/tree1.png");
+		spr_tree2 = sfw::loadTextureMap("../res/tree2.png");
+		spr_space = sfw::loadTextureMap("../res/space.png");
 		spr_ship = sfw::loadTextureMap("../res/ship.png");
-		spr_roid = sfw::loadTextureMap("../res/rock.png");
+		spr_animal = sfw::loadTextureMap("../res/animal.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 	}
 
@@ -38,20 +46,22 @@ public:
 		for (auto it = factory.begin(); it != factory.end(); it->onFree(), it.free());
 
 		// setup a default camera
-		currentCamera = factory.spawnCamera(800, 600, 1);
-		currentCamera->transform->setGlobalPosition(vec2{ 400, 300 });
+		currentCamera = factory.spawnCamera(1600, 900, 1);
+		currentCamera->transform->setGlobalPosition(vec2{ 800, 0 });
 
 		// call some spawning functions!
-		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
-
+		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
+		for (int i = 0; i < 8; ++i) {
+			factory.spawnTree(spr_tree1);
+			factory.spawnTree(spr_tree2);
+			factory.spawnAnimal(spr_animal);
+			factory.spawnRock(spr_rock1);
+			factory.spawnRock(spr_rock2);
+		}
 		//factory.spawnPlayer(spr_ship, spr_font, true);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
+		
+		
+
 	}
 
 	virtual void stop()
@@ -69,7 +79,7 @@ public:
 	{
 		float dt = sfw::getDeltaTime();
 
-		// maybe spawn some asteroids here.
+		// maybe spawn some asteroids here.		
 
 		for(auto it = factory.begin(); it != factory.end();) // no++!
 		{
@@ -150,9 +160,13 @@ public:
 
 		// draw sprites
 		for each(auto &e in factory)
-			if (e.transform && e.sprite)
+		{
+			if (e.transform->getAffectedByScale() && e.sprite)
+				e.sprite->scaleDraw(&e.transform, cam,
+					&currentCamera->transform);
+			else if (e.transform && !e.transform->getAffectedByScale() && e.sprite)
 				e.sprite->draw(&e.transform, cam);
-
+		}
 		// draw text
 		for each(auto &e in factory)
 			if (e.transform && e.text)
@@ -160,6 +174,11 @@ public:
 
 
 #ifdef _DEBUG
+		
+		printf("cam x = %f, cam y = %f\n", 
+			currentCamera->transform->getGlobalPosition().x,
+			currentCamera->transform->getGlobalPosition().y);
+
 		for each(auto &e in factory)
 			if (e.transform)
 				e.transform->draw(cam);
