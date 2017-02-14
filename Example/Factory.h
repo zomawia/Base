@@ -100,7 +100,7 @@ public:
 
 		e->sprite->sprite_id = sprite;
 
-		if (isScaled) {
+		if (isScaled == true) {
 			e->transform->setBeAffectedByScale();
 		}
 

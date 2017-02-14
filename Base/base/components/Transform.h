@@ -108,6 +108,8 @@ public:
 	void setGlobalScale(const vec2 &S)    { m_localScale    = (getGlobalToLocal() * vec3(S, 0)).xy; }
 	void setGlobalAngle(float a)				{ m_localAngle    = (getGlobalToLocal() * vec3(vec2::fromAngle(a),0)).xy.angle(); }
 
+	bool getAffectedByScale() const { return affectedByScale; }
+
 	vec2 getGlobalUp() const { return getGlobalTransform().c2.xy.normal(); }
 
 	vec2 getGlobalPosition()  const { return getGlobalTransform().getTrans2D(); }
@@ -115,14 +117,7 @@ public:
 	float	   getGlobalAngle()		const { return getGlobalTransform().getAngle2D(); }
 
 
-	mat3 getGlobalTransform() const { 
-		
-		if (affectedByScale == true) {
-			//vec3 scaler = { 2,2,0 };
-			return getLocalToGlobal() * getLocalTransform() * 1000;
-		}
-		else	return getLocalToGlobal() * getLocalTransform(); 
-	}
+	mat3 getGlobalTransform() const { return getLocalToGlobal() * getLocalTransform(); }
 
 	// convert points in local space to global space, this is the parent's transform
 	mat3 getLocalToGlobal()   const

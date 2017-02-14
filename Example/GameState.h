@@ -46,8 +46,8 @@ public:
 
 		factory.spawnPlayer(spr_ship, spr_font, true);
 		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid, true);
-		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid);
+		factory.spawnAsteroid(spr_roid);
 	}
 
 	virtual void stop()

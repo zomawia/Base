@@ -6,7 +6,7 @@ class PlayerController
 {
 
 public:
-	float speed = 50, turnSpeed = 6;
+	float speed = 50, turnSpeed = 4;
 
 	float shotTimer = 0.0f;
 	bool shotRequest = false;

@@ -29,6 +29,13 @@ public:
 	void draw(const Transform *T, const mat3 &C) const
 	{
 		mat3 glob = C * T->getGlobalTransform() * getDrawMatrix();
+		
+		if (T->getAffectedByScale()) {
+			float sc = 1 / T->getGlobalPosition().y;
+			printf("sc = %f, glob.y = %f \n", sc, T->getGlobalPosition().y);
+			glob = C * T->getGlobalTransform() * mat3::translate(offset) * mat3::rotate(angle) * mat3::scale(dimensions*sc);
+		}
+		
 		sfw::drawTextureMatrix3(sprite_id, frame_id, tint, glob.v, 0);
 	}
 };
