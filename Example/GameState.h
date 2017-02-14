@@ -91,8 +91,8 @@ public:
 				//}
 			}
 
-			if (e.transform && e.rigidbody && e.cameraControllers) {
-				e.cameraControllers->poll(&e.camera, &e.rigidbody, dt);
+			if (e.cameraControllers) {
+				e.cameraControllers->poll(&currentCamera->transform, &currentCamera->rigidbody);
 			}
 
 			// lifetime decay update

@@ -39,9 +39,11 @@ public:
 	{
 		auto e = entities.push();
 		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
 		e->camera = cameras.push();
 		e->camera->offset = vec2{w2,h2};
 		e->camera->scale = vec2{ zoom,zoom };
+		e->cameraControllers = cameraControllers.push();
 		return e;
 	}
 

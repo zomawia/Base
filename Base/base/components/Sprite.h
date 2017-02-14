@@ -34,8 +34,11 @@ public:
 
 		if (T->getAffectedByScale()) {
 			
+			// the top y pos divided by uhh
 			float sc = 600.f/(T->getGlobalPosition().y + yOffset);
-			printf("sc = %f \n", sc);
+			
+			//printf("sc = %f \n", sc);
+
 			if (sc > 6.f) sc = 6.f;
 			if (sc < 0) sc = 0;
 
