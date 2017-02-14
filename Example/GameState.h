@@ -44,10 +44,14 @@ public:
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
 
-		factory.spawnPlayer(spr_ship, spr_font, true);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
+		//factory.spawnPlayer(spr_ship, spr_font, true);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
 	}
 
 	virtual void stop()
@@ -79,16 +83,16 @@ public:
 			// controller update
 			if (e.transform && e.rigidbody && e.controller)
 			{
-				e.controller->poll(&e.transform, &e.rigidbody, dt);
-				if (e.controller->shotRequest) // controller requested a bullet fire
-				{
-					factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-											vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
-				}
+				//e.controller->poll(&e.transform, &e.rigidbody, dt);
+				//if (e.controller->shotRequest) // controller requested a bullet fire
+				//{
+				//	factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
+				//							vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
+				//}
 			}
 
 			if (e.transform && e.rigidbody && e.cameraControllers) {
-				//e.cameraControllers->poll(&e.camera, &e.rigidbody, dt);
+				e.cameraControllers->poll(&e.camera, &e.rigidbody, dt);
 			}
 
 			// lifetime decay update

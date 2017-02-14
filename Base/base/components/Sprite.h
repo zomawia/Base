@@ -30,9 +30,15 @@ public:
 	{
 		mat3 glob = C * T->getGlobalTransform() * getDrawMatrix();
 		
+		
+
 		if (T->getAffectedByScale()) {
-			float sc = 1 / T->getGlobalPosition().y;
-			printf("sc = %f, glob.y = %f \n", sc, T->getGlobalPosition().y);
+			
+			float sc = 600.f/(T->getGlobalPosition().y + yOffset);
+			printf("sc = %f \n", sc);
+			if (sc > 6.f) sc = 6.f;
+			if (sc < 0) sc = 0;
+
 			glob = C * T->getGlobalTransform() * mat3::translate(offset) * mat3::rotate(angle) * mat3::scale(dimensions*sc);
 		}
 		

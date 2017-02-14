@@ -17,6 +17,7 @@
 
 
 #include "../../../sfw/sfwdraw.h"
+#define yOffset 300
 
 namespace base
 {

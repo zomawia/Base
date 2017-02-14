@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include "Base.h"
 
 class CameraController
@@ -14,7 +12,7 @@ public:
 	{
 		if (sfw::getKey('W'))
 			rb->addForce(T->getGlobalUp() * speed);
-
+		
 		if (sfw::getKey('A'))
 			rb->addForce(T->getGlobalUp().right() * speed);
 
@@ -24,5 +22,4 @@ public:
 		if (sfw::getKey('S'))
 			rb->addForce(T->getGlobalUp() * -speed);
 	}
-
 };
