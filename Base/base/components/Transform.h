@@ -16,7 +16,7 @@ private:
 	vec2  m_localPosition;
 	vec2  m_localScale;
 	float m_localAngle;
-
+	bool affectedByScale;
 
 	void keepGlobalTransform(Transform *oldParent, Transform *newParent)
 	{
@@ -38,7 +38,7 @@ public:
 		debugDrawLine(t.c3.xy, t.c1.xy + t.c3.xy,0xff0000ff);
 	}
 
-	Transform() : m_parent(nullptr), m_localScale(1), m_localAngle(0) { memset(m_children, 0, sizeof(m_children)); }
+	Transform() : m_parent(nullptr), m_localScale(1), m_localAngle(0) { memset(m_children, 0, sizeof(m_children)); affectedByScale = false;}
 
 	~Transform()
 	{
@@ -93,6 +93,7 @@ public:
 	void setLocalPosition(const vec2 &P) { m_localPosition = P; }
 	void setLocalScale(const vec2 &S)    { m_localScale    = S; }
 	void setLocalAngle(float a)		     { m_localAngle    = a; }
+	void setBeAffectedByScale() { affectedByScale = true; }
 
 	const vec2 &getLocalPosition()  const { return m_localPosition; }
 	const vec2 &getLocalScale()	  const { return m_localScale;    }
@@ -114,7 +115,14 @@ public:
 	float	   getGlobalAngle()		const { return getGlobalTransform().getAngle2D(); }
 
 
-	mat3 getGlobalTransform() const { return getLocalToGlobal() * getLocalTransform(); }
+	mat3 getGlobalTransform() const { 
+		
+		if (affectedByScale == true) {
+			//vec3 scaler = { 2,2,0 };
+			return getLocalToGlobal() * getLocalTransform() * 1000;
+		}
+		else	return getLocalToGlobal() * getLocalTransform(); 
+	}
 
 	// convert points in local space to global space, this is the parent's transform
 	mat3 getLocalToGlobal()   const

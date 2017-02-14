@@ -3,6 +3,7 @@
 #include "Base.h"
 
 #include "PlayerController.h"
+#include "CameraController.h"
 
 using namespace base;
 
@@ -17,6 +18,7 @@ public:
 	ObjectPool<Sprite>::iterator sprite;
 	ObjectPool<Camera>::iterator camera;
 	ObjectPool<Text>::iterator text;
+	ObjectPool<CameraController>::iterator cameraControllers;
 
 	// example of a component in this project
 	ObjectPool<PlayerController>::iterator controller;
@@ -32,5 +34,6 @@ public:
 		text.free();
 
 		controller.free();
+		cameraControllers.free();
 	}
 };

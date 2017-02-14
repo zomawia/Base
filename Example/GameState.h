@@ -44,11 +44,10 @@ public:
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, 0, 800, 600);
 
-		factory.spawnPlayer(spr_ship, spr_font);
+		factory.spawnPlayer(spr_ship, spr_font, true);
 		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
-		factory.spawnAsteroid(spr_roid);
+		factory.spawnAsteroid(spr_roid, true);
+		factory.spawnAsteroid(spr_roid, true);
 	}
 
 	virtual void stop()
@@ -87,6 +86,11 @@ public:
 											vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
 				}
 			}
+
+			if (e.transform && e.rigidbody && e.cameraControllers) {
+				//e.cameraControllers->poll(&e.camera, &e.rigidbody, dt);
+			}
+
 			// lifetime decay update
 			if (e.lifetime)
 			{
@@ -106,9 +110,7 @@ public:
 
 
 		// Physics system!
-		// You'll want to extend this with custom collision responses
-
-		
+		// You'll want to extend this with custom collision responses		
 		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
 			for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
 				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)

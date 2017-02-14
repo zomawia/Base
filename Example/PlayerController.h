@@ -6,7 +6,7 @@ class PlayerController
 {
 
 public:
-	float speed = 10, turnSpeed = 1;
+	float speed = 50, turnSpeed = 6;
 
 	float shotTimer = 0.0f;
 	bool shotRequest = false;
@@ -21,6 +21,9 @@ public:
 
 		if (sfw::getKey('D'))
 			rb->addTorque(-turnSpeed);
+
+		if (sfw::getKey('S'))
+			rb->addForce(T->getGlobalUp() * -speed);
 
 		shotTimer -= dt;
 		if (sfw::getKey(' ') && shotTimer < 0)

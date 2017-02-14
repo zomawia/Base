@@ -15,6 +15,7 @@ class Factory
 	ObjectPool<Camera>    cameras;
 	ObjectPool<Text>	  texts;
 	ObjectPool<PlayerController> controllers;
+	ObjectPool<CameraController> cameraControllers;
 
 public:
 
@@ -24,9 +25,10 @@ public:
 
 	// for now, they're all the same size
 	Factory(size_t size = 512)
-								: entities(size), transforms(size), rigidbodies(size),
-								  colliders(size), sprites(size), lifetimes(size),
-								  cameras(size), controllers(size), texts(size)
+		: entities(size), transforms(size), rigidbodies(size),
+		colliders(size), sprites(size), lifetimes(size),
+		cameras(size), controllers(size), texts(size),
+		cameraControllers(size)
 	{
 	}
 
@@ -78,7 +80,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font)
+	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font, bool isScaled = false)
 	{
 		auto e = entities.push();
 
@@ -92,17 +94,21 @@ public:
 		e->text->sprite_id = font;
 		e->text->offset = vec2{ -24,-24 };
 		e->text->off_scale = vec2{.5f,.5f};
-		e->text->setString("Player1");
+		e->text->setString("assblast");
 
 		e->transform->setLocalScale(vec2{48,48});
 
 		e->sprite->sprite_id = sprite;
 
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
 		return e;
 	}
 
 
-	ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite)
+	ObjectPool<Entity>::iterator spawnAsteroid(unsigned sprite, bool isScaled = false)
 	{
 		auto e = entities.push();
 
@@ -119,8 +125,14 @@ public:
 
 		e->sprite->sprite_id = sprite;
 
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
 		return e;
 	}
+
+
 };
 
 
