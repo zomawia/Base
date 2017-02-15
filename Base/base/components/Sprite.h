@@ -26,10 +26,10 @@ public:
 	}
 
 	void scaleDraw(const Transform *T, const mat3 &C, const Transform *CT) {		
-		// the top y pos divided by uhh
+		
 		float a = T->getGlobalPosition().y;
 		float b = CT->getGlobalPosition().y;
-		float sc = dist(vec2{ 0,a }, vec2{ 0,b }) / 200;
+		float sc = dist(vec2{ 0,a }, vec2{ 0,b }) / 175;
 
 		if (sc > 8) sc = 8;
 		if (sc < .25f) sc = .25f;

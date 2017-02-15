@@ -14,8 +14,13 @@ class Factory
 	ObjectPool<Lifetime>  lifetimes;
 	ObjectPool<Camera>    cameras;
 	ObjectPool<Text>	  texts;
+
 	ObjectPool<PlayerController> controllers;
 	ObjectPool<CameraController> cameraControllers;
+	
+	ObjectPool<Animal> animals;
+	ObjectPool<Tree> trees;
+	
 
 public:
 
@@ -28,7 +33,7 @@ public:
 		: entities(size), transforms(size), rigidbodies(size),
 		colliders(size), sprites(size), lifetimes(size),
 		cameras(size), controllers(size), texts(size),
-		cameraControllers(size)
+		cameraControllers(size), animals(size), trees(size)
 	{
 	}
 
@@ -115,6 +120,7 @@ public:
 	{
 		auto e = entities.push();
 
+		e->tree = trees.push();
 		e->transform = transforms.push();
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
@@ -169,6 +175,7 @@ public:
 	{
 		auto e = entities.push();
 
+		e->animal = animals.push();
 		e->transform = transforms.push();
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();

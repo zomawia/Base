@@ -51,7 +51,7 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 1; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 			factory.spawnAnimal(spr_animal);
@@ -121,7 +121,8 @@ public:
 		//for animal finding the tree
 		for (auto it = factory.begin(); it != factory.end(); it++) {
 			for (auto bit = it; bit != factory.end(); bit++) {
-				if (it->)
+				vec2 dest = it->animal->closestTree(bit->transform,	it->transform);
+				it->animal->gotoTree(it->transform, dt);
 			}
 		}
 
