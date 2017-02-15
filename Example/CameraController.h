@@ -34,7 +34,7 @@ public:
 		
 		//bounds
 		if (T->getGlobalPosition().y < 0) T->setGlobalPosition({ T->getGlobalPosition().x, 0 });
-		if (T->getGlobalPosition().y > 200) T->setGlobalPosition({ T->getGlobalPosition().x, 200 });
+		if (T->getGlobalPosition().y > 300) T->setGlobalPosition({ T->getGlobalPosition().x, 300 });
 		if (T->getGlobalPosition().x > 1600) T->setGlobalPosition({ 1600, T->getGlobalPosition().y });
 		if (T->getGlobalPosition().x < 0) T->setGlobalPosition({ 0, T->getGlobalPosition().y });
 	}

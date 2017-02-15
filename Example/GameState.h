@@ -51,10 +51,15 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 5; ++i) {
+			factory.spawnTree(spr_tree1);
+			factory.spawnTree(spr_tree2);
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 			factory.spawnAnimal(spr_animal);
+			factory.spawnAnimal(spr_animal);
+			factory.spawnRock(spr_rock1);
+			factory.spawnRock(spr_rock2);
 			factory.spawnRock(spr_rock1);
 			factory.spawnRock(spr_rock2);
 		}
@@ -120,11 +125,11 @@ public:
 
 		//for animal finding the tree
 		for (auto it = factory.begin(); it != factory.end(); it++) {
-			for (auto bit = it; bit != factory.end(); bit++)
-
-				if(it != bit && it->animal) {
-				vec2 dest = it->animal->closestTree(bit->transform,	it->transform);
-				it->animal->gotoTree(it->transform, dt);
+			for (auto bit = it; bit != factory.end(); bit++){
+				if (it != bit && it->animal && bit->tree) {
+					vec2 dest = it->animal->closestTree(bit->transform, it->transform);
+					it->animal->gotoTree(it->transform, dt);
+				}
 			}
 		}
 
@@ -179,9 +184,9 @@ public:
 
 #ifdef _DEBUG
 		
-		printf("cam x = %f, cam y = %f\n", 
-			currentCamera->transform->getGlobalPosition().x,
-			currentCamera->transform->getGlobalPosition().y);
+		//printf("cam x = %f, cam y = %f\n", 
+		//	currentCamera->transform->getGlobalPosition().x,
+		//	currentCamera->transform->getGlobalPosition().y);
 
 		for each(auto &e in factory)
 			if (e.transform)
