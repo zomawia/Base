@@ -51,7 +51,7 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
-		for (int i = 0; i < 8; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 			factory.spawnAnimal(spr_animal);
@@ -93,12 +93,7 @@ public:
 			// controller update
 			if (e.transform && e.rigidbody && e.controller)
 			{
-				//e.controller->poll(&e.transform, &e.rigidbody, dt);
-				//if (e.controller->shotRequest) // controller requested a bullet fire
-				//{
-				//	factory.spawnBullet(spr_bullet, e.transform->getGlobalPosition()  + e.transform->getGlobalUp()*48,
-				//							vec2{ 32,32 }, e.transform->getGlobalAngle(), 200, 1);
-				//}
+				
 			}
 
 			if (e.cameraControllers) {
@@ -123,8 +118,14 @@ public:
 		}
 
 
-		// Physics system!
-		// You'll want to extend this with custom collision responses		
+		//for animal finding the tree
+		for (auto it = factory.begin(); it != factory.end(); it++) {
+			for (auto bit = it; bit != factory.end(); bit++) {
+				if (it->)
+			}
+		}
+
+		// Physics system!		
 		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
 			for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
 				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)

@@ -124,7 +124,7 @@ public:
 		
 		//e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
 		
-		e->transform->setGlobalPosition(vec2{ randomRange(-800, 800), randomRange(-900, 0) });
+		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, 0) });
 
 		//e->rigidbody->addSpin(rand01()*12-6);
 
@@ -151,7 +151,7 @@ public:
 
 		//e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
 
-		e->transform->setGlobalPosition(vec2{ randomRange(-800, 800), randomRange(-900, 0) });
+		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, 0) });
 
 		//e->rigidbody->addSpin(rand01()*12-6);
 
@@ -176,7 +176,7 @@ public:
 
 		e->transform->setLocalScale(vec2{ 30,20 });
 
-		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-900, -100) });
+		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, -100) });
 
 		e->sprite->sprite_id = sprite;
 
