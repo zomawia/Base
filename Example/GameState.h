@@ -51,17 +51,14 @@ public:
 
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
-		for (int i = 0; i < 5; ++i) {
-			factory.spawnTree(spr_tree1);
-			factory.spawnTree(spr_tree2);
+
+		for (int i = 0; i < 1; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 			factory.spawnAnimal(spr_animal);
-			factory.spawnAnimal(spr_animal);
 			factory.spawnRock(spr_rock1);
 			factory.spawnRock(spr_rock2);
-			factory.spawnRock(spr_rock1);
-			factory.spawnRock(spr_rock2);
+
 		}
 		//factory.spawnPlayer(spr_ship, spr_font, true);
 		
@@ -123,15 +120,16 @@ public:
 		}
 
 
-		//for animal finding the tree
+		//animal find tree
 		for (auto it = factory.begin(); it != factory.end(); it++) {
-			for (auto bit = it; bit != factory.end(); bit++){
-				if (it != bit && it->animal && bit->tree) {
-					vec2 dest = it->animal->closestTree(bit->transform, it->transform);
-					it->animal->gotoTree(it->transform, dt);
+			for (auto bit = it; bit != factory.end(); bit++)
+				if (it != bit && bit->animal && it->tree) {
+						//printf("found animal and tree\n");
+						bit->animal->setTarget(bit->transform, it->transform);
 				}
-			}
 		}
+
+
 
 		// Physics system!		
 		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
@@ -171,8 +169,7 @@ public:
 		for each(auto &e in factory)
 		{
 			if (e.transform->getAffectedByScale() && e.sprite)
-				e.sprite->scaleDraw(&e.transform, cam,
-					&currentCamera->transform);
+				e.sprite->scaleDraw(&e.transform, cam, &currentCamera->transform);
 			else if (e.transform && !e.transform->getAffectedByScale() && e.sprite)
 				e.sprite->draw(&e.transform, cam);
 		}
@@ -182,23 +179,23 @@ public:
 				e.text->draw(&e.transform, cam);
 
 
-#ifdef _DEBUG
-		
-		//printf("cam x = %f, cam y = %f\n", 
-		//	currentCamera->transform->getGlobalPosition().x,
-		//	currentCamera->transform->getGlobalPosition().y);
-
-		for each(auto &e in factory)
-			if (e.transform)
-				e.transform->draw(cam);
-
-		for each(auto &e in factory)
-			if (e.transform && e.collider)
-				e.collider->draw(&e.transform, cam);
-
-		for each(auto &e in factory)
-			if (e.transform && e.rigidbody)
-				e.rigidbody->draw(&e.transform, cam);
-#endif
+//#ifdef _DEBUG
+//		
+//		//printf("cam x = %f, cam y = %f\n", 
+//		//	currentCamera->transform->getGlobalPosition().x,
+//		//	currentCamera->transform->getGlobalPosition().y);
+//
+//		for each(auto &e in factory)
+//			if (e.transform)
+//				e.transform->draw(cam);
+//
+//		for each(auto &e in factory)
+//			if (e.transform && e.collider)
+//				e.collider->draw(&e.transform, cam);
+//
+//		for each(auto &e in factory)
+//			if (e.transform && e.rigidbody)
+//				e.rigidbody->draw(&e.transform, cam);
+//#endif
 	}
 };

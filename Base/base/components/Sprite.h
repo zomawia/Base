@@ -29,9 +29,9 @@ public:
 		
 		float a = T->getGlobalPosition().y;
 		float b = CT->getGlobalPosition().y;
-		float sc = dist(vec2{ 0,a }, vec2{ 0,b }) / 175;
+		float sc = dist(vec2{ 0,a }, vec2{ 0,b }) / 155;
 
-		if (sc > 8) sc = 8;
+		if (sc > 9) sc = 9;
 		if (sc < .25f) sc = .25f;
 
 		mat3 glob = C * T->getGlobalTransform() * mat3::translate(offset) * mat3::rotate(angle) * mat3::scale(dimensions * sc);
