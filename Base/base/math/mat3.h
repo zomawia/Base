@@ -40,6 +40,11 @@ namespace base
 		static mat3 scale(float w, float h)		{ return scale(vec2{ w,h }); }
 		static mat3 scale(float s)				{ return scale(s, s); }
 
+		static mat3 shear(const vec2 &a) {
+			mat3 retval = { 1,0,0,tan(a.x),1,0,0,0,1 };
+			return retval;
+		}
+
 		static mat3 rotate(const vec2 &d)		{ return rotate(d.angle()); }
 		static mat3 rotate(float angle)
 		{

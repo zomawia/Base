@@ -61,9 +61,9 @@ public:
 
 		if (newDest < oldDest || goingRandom == true) {
 			goingRandom = false;
-			return newDest;
+			return treePos;
 		}
-		else return oldDest;
+		else return myDest;
 	}
 
 	bool isAtDestination(const ObjectPool<Transform>::iterator &animal) {
@@ -84,10 +84,12 @@ public:
 		vec2 animalPos = animal->getGlobalPosition();
 		vec2 treePos = tree->getGlobalPosition();
 
-		if (myDest.x == NULL && myDest.y == NULL) {
-			setRandomDest(animal);
-			printf("Random dest for starting\n");
-		}
+		//if (myDest.x == NULL && myDest.y == NULL) {
+		//	setRandomDest(animal);
+		//	printf("Random dest for starting\n");
+		//}
+
+
 
 		if (isAtDestination(animal) == false) {
 			if (isTreeClose(animal, tree) == true) {

@@ -34,9 +34,13 @@ public:
 		if (sc > 9) sc = 9;
 		if (sc < .25f) sc = .25f;
 
-		mat3 glob = C * T->getGlobalTransform() * mat3::translate(offset) * mat3::rotate(angle) * mat3::scale(dimensions * sc);
+		//shadow
+		mat3 glob = C * T->getGlobalTransform() * mat3::translate(1.5f, 0) * mat3::rotate(0) * mat3::shear(1) * mat3::scale(dimensions * sc);
+		sfw::drawTextureMatrix3(sprite_id, frame_id, BLACK, glob.v, 0);
 
+		glob = C * T->getGlobalTransform() * mat3::translate(offset) * mat3::rotate(angle) * mat3::scale(dimensions * sc);
 		sfw::drawTextureMatrix3(sprite_id, frame_id, tint, glob.v, 0);
+
 	}
 
 	void draw(const Transform *T, const mat3 &C) const	{

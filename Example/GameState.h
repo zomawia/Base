@@ -52,7 +52,7 @@ public:
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
 
-		for (int i = 0; i < 1; ++i) {
+		for (int i = 0; i < 20; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 			factory.spawnAnimal(spr_animal);
@@ -134,30 +134,30 @@ public:
 
 
 		// Physics system!		
-		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
-			for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
-				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
-				// if they aren't the same and they both have collidable bits...
-				{
-					// test their bounding boxes
-					if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
-					{
-						// if true, get the penetration and normal from the convex hulls
-						auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
-						
-						// if there was a collision,
-						if (cd.result())
-						{
-							// condition for dynamic resolution
-							if (it->rigidbody && bit->rigidbody)
-								base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
-							
-							// condition for static resolution
-							else if (it->rigidbody && !bit->rigidbody)							
-								base::StaticResolution(cd, &it->transform, &it->rigidbody);					
-						}
-					}
-				}
+		//for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
+		//	for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
+		//		if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
+		//		// if they aren't the same and they both have collidable bits...
+		//		{
+		//			// test their bounding boxes
+		//			//if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
+		//			//{
+		//			//	// if true, get the penetration and normal from the convex hulls
+		//			//	auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
+		//			//	
+		//			//	// if there was a collision,
+		//			//	if (cd.result())
+		//			//	{
+		//			//		// condition for dynamic resolution
+		//			//		if (it->rigidbody && bit->rigidbody)
+		//			//			base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
+		//			//		
+		//			//		// condition for static resolution
+		//			//		else if (it->rigidbody && !bit->rigidbody)							
+		//			//			base::StaticResolution(cd, &it->transform, &it->rigidbody);					
+		//			//	}
+		//			//}
+		//		}
 
 	}
 
