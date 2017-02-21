@@ -10,7 +10,7 @@ namespace flops
 
 inline bool fequals(float a, float b) { return (a < b + FLUDGE && b < a + FLUDGE); }
 
-inline float lerp(float s, float e, float t) { return (t - 1)*s + t*e; }
+inline float lerp(float s, float e, float t) { return (1 - t)*s + t*e; }
 
 inline float min(float a, float b) { return a < b ? a : b; }
 

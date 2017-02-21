@@ -56,6 +56,7 @@ public:
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 			factory.spawnAnimal(spr_animal);
+			//factory.spawnAnimal(spr_animal);
 			factory.spawnRock(spr_rock1);
 			factory.spawnRock(spr_rock2);
 
