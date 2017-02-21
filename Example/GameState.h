@@ -126,6 +126,7 @@ public:
 				if (it != bit && bit->animal && it->tree) {
 						//printf("found animal and tree\n");
 						bit->animal->setTarget(bit->transform, it->transform);
+						bit->animal->gotoDest(bit->transform, dt);
 				}
 		}
 
