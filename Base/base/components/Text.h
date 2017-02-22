@@ -23,7 +23,7 @@ public:
 		auto pos = glob.getTrans2D() + offset;
 		auto dim = glob.getScale2D();
 		
-		sfw::drawString(sprite_id, m_characters, pos.x,pos.y,dim.x*off_scale.x,dim.y*off_scale.y, 0 );
+		sfw::drawString(sprite_id, m_characters, pos.x,pos.y,dim.x*off_scale.x,dim.y*off_scale.y, 0, 10 );
 	}
 };
 

@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Base.h"
+#include "Tree.h"
 
 using namespace base;
 
 class Animal {	
-	ObjectPool<Transform>::iterator myTree;
+	//ObjectPool<Tree>::iterator myTree;
 	
 	vec2 closestTree;
 	vec2 myDest;
@@ -13,7 +14,7 @@ class Animal {
 public:
 	enum aState
 	{
-		STABLE, MOVING, EATING 
+		STABLE, MOVING, EATING, PROBE 
 	};
 	aState animalState;
 	bool atTree;
@@ -28,13 +29,35 @@ public:
 	unsigned int *name;
 	
 	Animal(float moveSpd = 10.f, float eat = 3, float m_weight = 10,
-		float m_scale = 1, float m_range = 2500, float sTimer = 0)
+		float m_scale = 1, float m_range = 1500, float sTimer = 0)
 		: moveSpeed(moveSpd), eatSpeed(eat), weight(m_weight), scale(m_scale) ,
 		walkRange(m_range), atTree(false), myDest(vec2{NULL,NULL}), goingRandom(false),
 		animalState(STABLE) {};
 
 	void setName(unsigned int *a_name) {
 		name = a_name;
+	}
+
+	char* getStateToChar() { 
+		char* retval;
+
+		switch (animalState) {
+		case EATING:
+			retval = "EATING";
+			break;
+		case MOVING:
+			retval = "MOVING";
+			break;
+		case PROBE:
+			retval = "PROBE";
+			break;		
+		case STABLE:
+		default:
+			retval = "STABLE";
+			break;
+		}
+							
+		return retval; 
 	}
 
 	bool isTreeClose(const ObjectPool<Transform>::iterator &animal, const ObjectPool<Transform>::iterator &tree){
@@ -72,7 +95,7 @@ public:
 		
 		//printf("%f\n", closeEnough);
 
-		if (animalPos == myDest || closeEnough < 5.f) {
+		if (animalPos == myDest || closeEnough < 10.f) {
 			//printf("I am at my destination!\n");
 			animalState = STABLE;
 			return true;
@@ -80,18 +103,40 @@ public:
 		else return false;
 	}
 
+	bool isAtTree(const ObjectPool<Transform>::iterator &animal,
+		const ObjectPool<Transform>::iterator &tree) {
+
+		vec2 animalPos = animal->getGlobalPosition();
+		vec2 treePos = tree->getGlobalPosition();
+		float closeEnough = dist(animalPos, treePos);
+
+		if (animalPos == treePos || closeEnough < 10.f) {
+			animalState = PROBE;
+			return true;
+		}
+		else return false;
+	}
+
+	bool canEatFromTree(ObjectPool<Tree>::iterator &tree) {
+		if (tree->getIsPaired() == false) return true;
+		else return false;
+	}
+
+	//void setMyTree(const ObjectPool<Tree>::iterator &tree) {
+	//	myTree = tree;
+	//}
+
 	void setTarget(const ObjectPool<Transform>::iterator &animal, const ObjectPool<Transform>::iterator &tree) {
 		vec2 animalPos = animal->getGlobalPosition();
 		vec2 treePos = tree->getGlobalPosition();
 
-		//if (myDest.x == NULL && myDest.y == NULL) {
-		//	setRandomDest(animal);
-		//	printf("Random dest for starting\n");
-		//}
-
-
-
-		if (isAtDestination(animal) == false) {
+		if (myDest.x == NULL && myDest.y == NULL) {
+			setRandomDest(animal);
+			printf("Random dest for starting\n");
+		}
+		
+		if (isAtDestination(animal) == false) 
+		{
 			if (isTreeClose(animal, tree) == true) {
 				myDest = getClosestTree(animal, tree);
 				//atTree = true;
@@ -104,12 +149,13 @@ public:
 			}
 		}
 		
-		else if (isAtDestination(animal) == true){
-			if (atTree==true) {
+		else if (isAtDestination(animal) == true)
+		{
+			if (isAtTree(animal, tree) == true) {
 				//check if tree available
 				printf("Im at a tree\n");
 			}
-			if (atTree==false){
+			else if (isAtTree(animal, tree) == false && animalState == PROBE){
 				setRandomDest(animal);
 				printf("At destination cant find tree. Going random -- %f, %f \n", myDest.x, myDest.y);
 			}				
@@ -130,15 +176,14 @@ public:
 		}
 	}
 
-	bool isTreeTaken() {
+	void processEating(const ObjectPool<Animal>::iterator &animal, ObjectPool<Tree>::iterator &tree) {
+		//check tree validity
+		if (animalState == PROBE && canEatFromTree(tree) == true) {
+			//ok to eat, start eating
 
-	}
+		}
 
-	bool canEatFromTree() {
-
-	}
-
-	void eatTree() {
+		
 
 	}
 

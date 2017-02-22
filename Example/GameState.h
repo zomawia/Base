@@ -19,7 +19,8 @@
 class GameState : public BaseState
 {
 	Factory factory;
-	unsigned spr_space, spr_ship, 
+	
+	unsigned spr_space, spr_gras1, spr_gras2, 
 		spr_tree1, spr_tree2,
 		spr_rock1, spr_rock2,
 		spr_animal, spr_font;
@@ -30,12 +31,15 @@ public:
 	virtual void init()
 	{
 		//spr_bullet = sfw::loadTextureMap("../res/bullet.png");
+		//spr_ship = sfw::loadTextureMap("../res/ship.png");
+
 		spr_rock1 = sfw::loadTextureMap("../res/rock1.png");
 		spr_rock2 = sfw::loadTextureMap("../res/rock2.png");
 		spr_tree1 = sfw::loadTextureMap("../res/tree1.png");
 		spr_tree2 = sfw::loadTextureMap("../res/tree2.png");
 		spr_space = sfw::loadTextureMap("../res/space.png");
-		spr_ship = sfw::loadTextureMap("../res/ship.png");
+		spr_gras1 = sfw::loadTextureMap("../res/grass1.png");
+		spr_gras2 = sfw::loadTextureMap("../res/grass2.png");
 		spr_animal = sfw::loadTextureMap("../res/animal.png");
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 	}
@@ -52,13 +56,18 @@ public:
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
 
-		for (int i = 0; i < 20; ++i) {
+		for (int i = 0; i < 1; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
-			factory.spawnAnimal(spr_animal);
+
+			factory.spawnAnimal(spr_animal, spr_font);
 			//factory.spawnAnimal(spr_animal);
 			factory.spawnRock(spr_rock1);
 			factory.spawnRock(spr_rock2);
+			factory.spawnGrass(spr_gras1);
+			factory.spawnGrass(spr_gras2);
+			factory.spawnGrass(spr_gras1);
+			factory.spawnGrass(spr_gras2);
 
 		}
 		//factory.spawnPlayer(spr_ship, spr_font, true);
@@ -88,6 +97,11 @@ public:
 		{
 			bool del = false; // does this entity end up dying?
 			auto &e = *it;    // convenience reference
+
+			// state updates
+			if (e.animal) {
+				e.text->setString(e.animal->getStateToChar());				
+			}
 
 			// rigidbody update
 			if (e.transform && e.rigidbody)
@@ -124,40 +138,46 @@ public:
 		//animal find tree
 		for (auto it = factory.begin(); it != factory.end(); it++) {
 			for (auto bit = it; bit != factory.end(); bit++)
-				if (it != bit && bit->animal && it->tree) {
-						//printf("found animal and tree\n");
-						bit->animal->setTarget(bit->transform, it->transform);
-						bit->animal->gotoDest(bit->transform, dt);
+				if (it != bit && bit->animal && it->tree) 
+				{					
+					bit->animal->setTarget(bit->transform, it->transform);
+					bit->animal->gotoDest(bit->transform, dt);
+					bit->animal->processEating(bit->animal, it->tree);
+					if (false) 
+					{
+
+					}
+					
 				}
 		}
 
 
 
 		// Physics system!		
-		//for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
-		//	for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
-		//		if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
-		//		// if they aren't the same and they both have collidable bits...
-		//		{
-		//			// test their bounding boxes
-		//			//if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
-		//			//{
-		//			//	// if true, get the penetration and normal from the convex hulls
-		//			//	auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
-		//			//	
-		//			//	// if there was a collision,
-		//			//	if (cd.result())
-		//			//	{
-		//			//		// condition for dynamic resolution
-		//			//		if (it->rigidbody && bit->rigidbody)
-		//			//			base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
-		//			//		
-		//			//		// condition for static resolution
-		//			//		else if (it->rigidbody && !bit->rigidbody)							
-		//			//			base::StaticResolution(cd, &it->transform, &it->rigidbody);					
-		//			//	}
-		//			//}
-		//		}
+		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
+			for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
+				//if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
+				// if they aren't the same and they both have collidable bits...
+				{
+					//// test their bounding boxes
+					//if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
+					//{
+					//	// if true, get the penetration and normal from the convex hulls
+					//	auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
+					//	
+					//	// if there was a collision,
+					//	if (cd.result())
+					//	{
+					//		// condition for dynamic resolution
+					//		if (it->rigidbody && bit->rigidbody)
+					//			base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
+					//		
+					//		// condition for static resolution
+					//		else if (it->rigidbody && !bit->rigidbody)							
+					//			base::StaticResolution(cd, &it->transform, &it->rigidbody);					
+					//	}
+					//}
+				}
 
 	}
 

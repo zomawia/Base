@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include <string>
 
 class Factory
 {	
@@ -171,7 +172,26 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnAnimal(unsigned sprite, bool isScaled = true)
+	ObjectPool<Entity>::iterator spawnGrass(unsigned sprite, bool isScaled = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->sprite = sprites.push();
+
+		e->transform->setLocalScale(vec2{ 4,8 });
+		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, 0) });
+
+		e->sprite->sprite_id = sprite;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnAnimal(unsigned sprite, unsigned font = NULL, bool isScaled = true)
 	{
 		auto e = entities.push();
 
@@ -180,10 +200,17 @@ public:
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
+		e->text = texts.push();
 
 		e->transform->setLocalScale(vec2{ 30,20 });
 
 		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, -100) });
+
+		e->text->sprite_id = font;
+		e->text->offset = vec2{ -24,-24 };
+		e->text->off_scale = vec2{ .25f,.25f };
+		
+		e->text->setString("treehump");
 
 		e->sprite->sprite_id = sprite;
 
