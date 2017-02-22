@@ -30,6 +30,13 @@ private:
 		m_localAngle	= res.getAngle2D();
 	}
 public:
+	
+	int getDirection(vec2 dir) {
+		if (dot(dir, { -1,0 }) > dot(dir, { 1,0 }))
+			return 0;	//left
+		else return 1;	//right
+	}
+	
 	void draw(const mat3 &cam) const
 	{
 		auto t = cam * getGlobalTransform();

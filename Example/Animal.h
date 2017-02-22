@@ -17,22 +17,23 @@ public:
 		STABLE, MOVING, EATING, PROBE 
 	};
 	aState animalState;
+	int dir;
 	bool atTree;
 	bool goingRandom;
 	float searchTimer;
 	float moveSpeed;
 	float eatSpeed;
 	float weight;
-	float scale;
+	vec2 scale;
 	float walkRange;
 
 	unsigned int *name;
 	
-	Animal(float moveSpd = 10.f, float eat = 3, float m_weight = 10,
-		float m_scale = 1, float m_range = 1500, float sTimer = 0)
+	Animal(float moveSpd = 50, float eat = .75f, float m_weight = 10,
+		vec2 m_scale = { 30,20 }, float m_range = 300, float sTimer = 0)
 		: moveSpeed(moveSpd), eatSpeed(eat), weight(m_weight), scale(m_scale) ,
 		walkRange(m_range), atTree(false), myDest(vec2{NULL,NULL}), goingRandom(false),
-		animalState(STABLE) {};
+		animalState(STABLE), dir(0) {};
 
 	void setName(unsigned int *a_name) {
 		name = a_name;
@@ -95,8 +96,8 @@ public:
 		
 		//printf("%f\n", closeEnough);
 
-		if (animalPos == myDest || closeEnough < 10.f) {
-			//printf("I am at my destination!\n");
+		if (atTree == false && (animalPos == myDest || closeEnough < 10.f) ) {
+			printf("I am at my destination!\n");
 			animalState = STABLE;
 			return true;
 		}
@@ -110,7 +111,8 @@ public:
 		vec2 treePos = tree->getGlobalPosition();
 		float closeEnough = dist(animalPos, treePos);
 
-		if (animalPos == treePos || closeEnough < 10.f) {
+		if (animalPos == treePos || closeEnough < 10.f ) {
+			atTree = true;
 			animalState = PROBE;
 			return true;
 		}
@@ -118,7 +120,10 @@ public:
 	}
 
 	bool canEatFromTree(ObjectPool<Tree>::iterator &tree) {
-		if (tree->getIsPaired() == false) return true;
+		if (tree->getIsPaired() == false) {
+			tree->setIsPaired(true);
+			return true;
+		}
 		else return false;
 	}
 
@@ -137,7 +142,7 @@ public:
 		
 		if (isAtDestination(animal) == false) 
 		{
-			if (isTreeClose(animal, tree) == true) {
+			if (isTreeClose(animal, tree) == true && (animalState == MOVING || animalState == STABLE)) {
 				myDest = getClosestTree(animal, tree);
 				//atTree = true;
 				printf("Near a tree. Going = %f, %f \n", myDest.x, myDest.y);
@@ -154,8 +159,9 @@ public:
 			if (isAtTree(animal, tree) == true) {
 				//check if tree available
 				printf("Im at a tree\n");
+				animalState = PROBE;
 			}
-			else if (isAtTree(animal, tree) == false && animalState == PROBE){
+			else if (isAtTree(animal, tree) == false && animalState == STABLE){
 				setRandomDest(animal);
 				printf("At destination cant find tree. Going random -- %f, %f \n", myDest.x, myDest.y);
 			}				
@@ -166,26 +172,44 @@ public:
 		if (isAtDestination(animal) == false ) {
 			vec2 currentDir = (myDest - animal->getGlobalPosition()).normal()*moveSpeed;
 			vec2 currentPos = animal->getGlobalPosition();
-			//float t = 0;
-			//while (t < 1)
-			{
-				//float t = dt /(moveSpeed);
-				animal->setGlobalPosition(lerp(currentPos, currentPos + currentDir, dt));
-				//printf("globalpos = %f, %f\n", animal->getGlobalPosition().x, animal->getGlobalPosition().y);
-			}
+			
+			dir = animal->getDirection(currentDir);
+			animal->setGlobalPosition(lerp(currentPos, currentPos + currentDir, dt));
+
 		}
 	}
 
-	void processEating(const ObjectPool<Animal>::iterator &animal, ObjectPool<Tree>::iterator &tree) {
+	void growAnimal(ObjectPool<Transform>::iterator &transform, vec2 scale) {
+		transform->setLocalScale(scale);
+	}
+
+	void processEating(ObjectPool<Transform>::iterator &animal, ObjectPool<Tree>::iterator &tree, float dt) {
 		//check tree validity
 		if (animalState == PROBE && canEatFromTree(tree) == true) {
 			//ok to eat, start eating
-
+			printf("I can eat!\n");
+			animalState = EATING;
 		}
 
-		
+		if (animalState == EATING) {			
+			// grow
+			scale += dt * eatSpeed;
+			growAnimal(animal, scale);
+			// grow tree
+			//tree->scale;
 
+			printf("I am eating now.\n");
+
+		}
 	}
+
+	bool shouldThisAnimaBeEuthanisedOrBePutDeathPermanently(){
+		if (scale.x > 225) return true;
+		else return false;
+	}
+
+	void canLayEgg() {}
+	void LayEgg() {}
 
 	unsigned int *getName() const { return name; };
 };

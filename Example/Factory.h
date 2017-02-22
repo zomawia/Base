@@ -179,7 +179,7 @@ public:
 		e->transform = transforms.push();
 		e->sprite = sprites.push();
 
-		e->transform->setLocalScale(vec2{ 4,8 });
+		e->transform->setLocalScale(vec2{ randomRange(4, 6), randomRange(4, 10) });
 		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, 0) });
 
 		e->sprite->sprite_id = sprite;
@@ -208,7 +208,7 @@ public:
 
 		e->text->sprite_id = font;
 		e->text->offset = vec2{ -24,-24 };
-		e->text->off_scale = vec2{ .25f,.25f };
+		e->text->off_scale = vec2{ .5f,.5f };
 		
 		e->text->setString("treehump");
 
@@ -217,18 +217,6 @@ public:
 		if (isScaled) {
 			e->transform->setBeAffectedByScale();
 		}
-
-		return e;
-	}
-
-	ObjectPool<Entity>::iterator spawnTransform(vec2 pos, vec2 dim, float rot)
-	{
-		auto e = entities.push();
-
-		e->transform = transforms.push();
-		e->transform->setGlobalPosition(pos);
-		e->transform->setGlobalScale(dim);
-		e->transform->setGlobalAngle(rot);
 
 		return e;
 	}

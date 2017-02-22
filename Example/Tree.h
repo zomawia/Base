@@ -14,12 +14,12 @@ public:
 
 	unsigned int *name;
 
-	Tree() : growSpeed(1), scale(1), isPaired(false)  {};
+	Tree() : growSpeed(2), scale(1), isPaired(false)  {};
 
 	void setName(unsigned int *a_name) {
 		name = a_name;
 	}
-
+	void setIsPaired(bool ok) { isPaired = ok; }
 	bool getIsPaired() { return isPaired; }
 
 	//void setMyAnimal(ObjectPool<Animal>::iterator animal) {

@@ -28,6 +28,7 @@ class GameState : public BaseState
 
 
 public:
+	float frameTimer;
 	virtual void init()
 	{
 		//spr_bullet = sfw::loadTextureMap("../res/bullet.png");
@@ -40,7 +41,7 @@ public:
 		spr_space = sfw::loadTextureMap("../res/space.png");
 		spr_gras1 = sfw::loadTextureMap("../res/grass1.png");
 		spr_gras2 = sfw::loadTextureMap("../res/grass2.png");
-		spr_animal = sfw::loadTextureMap("../res/animal.png");
+		spr_animal = sfw::loadTextureMap("../res/animal.png", 3, 2);
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 	}
 
@@ -56,7 +57,7 @@ public:
 		// call some spawning functions!
 		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
 
-		for (int i = 0; i < 1; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 
@@ -142,10 +143,12 @@ public:
 				{					
 					bit->animal->setTarget(bit->transform, it->transform);
 					bit->animal->gotoDest(bit->transform, dt);
-					bit->animal->processEating(bit->animal, it->tree);
-					if (false) 
-					{
+					bit->animal->processEating(bit->transform, it->tree, dt);
 
+					if (bit->animal->shouldThisAnimaBeEuthanisedOrBePutDeathPermanently() == true)
+					{
+						bit->onFree();
+						bit.free();
 					}
 					
 				}
@@ -184,12 +187,24 @@ public:
 
 	virtual void draw()	
 	{
+		float dt = sfw::getDeltaTime();
+		
 		// kind of round about, but this is the camera matrix from the factory's current camera
 		auto cam = currentCamera->camera->getCameraMatrix(&currentCamera->transform);
 
 		// draw sprites
 		for each(auto &e in factory)
 		{
+			if (e.animal) {
+				if (e.animal->dir == 0) {
+					//e.sprite->frame_id = frameID % 3 + dir * 3;
+				}
+				if (e.animal->dir == 1) {
+					//e.sprite->scaleAnimDraw(&e.transform, cam, &currentCamera->transform, 1, dt);
+				}
+			}
+
+			
 			if (e.transform->getAffectedByScale() && e.sprite)
 				e.sprite->scaleDraw(&e.transform, cam, &currentCamera->transform);
 			else if (e.transform && !e.transform->getAffectedByScale() && e.sprite)
