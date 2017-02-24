@@ -1,3 +1,5 @@
+// Ass3 by Zomawia Sailo
+// zomawia@gmail.com
 
 #include "sfwdraw.h"
 #include "GameState.h"

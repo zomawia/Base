@@ -4,18 +4,6 @@
 #include "BaseState.h"
 #include "Factory.h"
 
-
-/*
-	The gamestate represents a discrete container of all that is 
-	necessary to drive the game experience.
-
-	A factory object is used to manage the creation and deletion of
-	objects in the simulation.
-
-	The game state updates the entities within the factory using
-	a series of 'systems.'
-*/
-
 class GameState : public BaseState
 {
 	Factory factory;
@@ -23,7 +11,8 @@ class GameState : public BaseState
 	unsigned spr_space, spr_gras1, spr_gras2, 
 		spr_tree1, spr_tree2,
 		spr_rock1, spr_rock2,
-		spr_animal, spr_font;
+		spr_animal, spr_font,
+		spr_HUDfont, spr_button;
 	ObjectPool<Entity>::iterator currentCamera;
 
 
@@ -42,7 +31,11 @@ public:
 		spr_gras1 = sfw::loadTextureMap("../res/grass1.png");
 		spr_gras2 = sfw::loadTextureMap("../res/grass2.png");
 		spr_animal = sfw::loadTextureMap("../res/animal.png", 3, 2);
+		
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
+		spr_button = sfw::loadTextureMap("../res/button.png");
+		spr_HUDfont = sfw::loadTextureMap("../res/uglyfont.png", 16, 16);
+
 	}
 
 	virtual void play()
@@ -54,26 +47,24 @@ public:
 		currentCamera = factory.spawnCamera(1600, 900, 1);
 		currentCamera->transform->setGlobalPosition(vec2{ 800, 0 });
 
-		// call some spawning functions!
-		factory.spawnStaticImage(spr_space, 0, -450, 3400, 2000);
+		factory.spawnStaticImage(spr_space, 0, -450, 3600, 2000);
+
+		factory.spawnButton(spr_button, spr_HUDfont, 50,50,24,24,"ass3");
 
 		for (int i = 0; i < 10; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 
 			factory.spawnAnimal(spr_animal, spr_font);
-			//factory.spawnAnimal(spr_animal);
+
 			factory.spawnRock(spr_rock1);
 			factory.spawnRock(spr_rock2);
-			factory.spawnGrass(spr_gras1);
-			factory.spawnGrass(spr_gras2);
-			factory.spawnGrass(spr_gras1);
-			factory.spawnGrass(spr_gras2);
 
+			factory.spawnGrass(spr_gras1);
+			factory.spawnGrass(spr_gras2);
+			factory.spawnGrass(spr_gras1);
+			factory.spawnGrass(spr_gras2);
 		}
-		//factory.spawnPlayer(spr_ship, spr_font, true);
-		
-		
 
 	}
 
@@ -99,7 +90,7 @@ public:
 			bool del = false; // does this entity end up dying?
 			auto &e = *it;    // convenience reference
 
-			// state updates
+			// state-machine updates
 			if (e.animal) {
 				e.text->setString(e.animal->getStateToChar());				
 			}
@@ -116,6 +107,10 @@ public:
 
 			if (e.cameraControllers) {
 				e.cameraControllers->poll(&currentCamera->transform, &currentCamera->rigidbody);
+			}
+
+			if (e.button) {
+				e.button->update(&e.transform, &currentCamera->transform);
 			}
 
 			// lifetime decay update
@@ -136,7 +131,7 @@ public:
 		}
 
 
-		//animal find tree
+		//animal do stuff
 		for (auto it = factory.begin(); it != factory.end(); it++) {
 			for (auto bit = it; bit != factory.end(); bit++)
 				if (it != bit && bit->animal && it->tree) 
@@ -145,6 +140,7 @@ public:
 					bit->animal->gotoDest(bit->transform, dt);
 					bit->animal->processEating(bit->transform, it->tree, dt);
 
+					//kill animal
 					if (bit->animal->shouldThisAnimaBeEuthanisedOrBePutDeathPermanently() == true)
 					{
 						bit->onFree();
@@ -153,6 +149,8 @@ public:
 					
 				}
 		}
+
+		//tree do stuff
 
 
 
@@ -189,6 +187,11 @@ public:
 	{
 		float dt = sfw::getDeltaTime();
 		
+		float camX = currentCamera->transform->getGlobalPosition().x;
+		float camY = currentCamera->transform->getGlobalPosition().y;
+
+		printf("x:%f   y:%f\n", camX, camY);
+
 		// kind of round about, but this is the camera matrix from the factory's current camera
 		auto cam = currentCamera->camera->getCameraMatrix(&currentCamera->transform);
 
@@ -211,9 +214,13 @@ public:
 				e.sprite->draw(&e.transform, cam);
 		}
 		// draw text
-		for each(auto &e in factory)
+		for each(auto &e in factory) {
 			if (e.transform && e.text)
 				e.text->draw(&e.transform, cam);
+
+			if (e.button)
+				e.button->draw(&e.transform, cam);
+		}
 
 
 //#ifdef _DEBUG

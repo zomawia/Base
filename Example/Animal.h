@@ -29,7 +29,7 @@ public:
 
 	unsigned int *name;
 	
-	Animal(float moveSpd = 50, float eat = .75f, float m_weight = 10,
+	Animal(float moveSpd = 20, float eat = .75f, float m_weight = 10,
 		vec2 m_scale = { 30,20 }, float m_range = 300, float sTimer = 0)
 		: moveSpeed(moveSpd), eatSpeed(eat), weight(m_weight), scale(m_scale) ,
 		walkRange(m_range), atTree(false), myDest(vec2{NULL,NULL}), goingRandom(false),
@@ -97,7 +97,7 @@ public:
 		//printf("%f\n", closeEnough);
 
 		if (atTree == false && (animalPos == myDest || closeEnough < 10.f) ) {
-			printf("I am at my destination!\n");
+			//printf("I am at my destination!\n");
 			animalState = STABLE;
 			return true;
 		}
@@ -137,7 +137,7 @@ public:
 
 		if (myDest.x == NULL && myDest.y == NULL) {
 			setRandomDest(animal);
-			printf("Random dest for starting\n");
+			//printf("Random dest for starting\n");
 		}
 		
 		if (isAtDestination(animal) == false) 
@@ -145,12 +145,12 @@ public:
 			if (isTreeClose(animal, tree) == true && (animalState == MOVING || animalState == STABLE)) {
 				myDest = getClosestTree(animal, tree);
 				//atTree = true;
-				printf("Near a tree. Going = %f, %f \n", myDest.x, myDest.y);
+				//printf("Near a tree. Going = %f, %f \n", myDest.x, myDest.y);
 			}
 			
 			else if (isTreeClose(animal, tree) == false && animalState == STABLE) {
 				setRandomDest(animal);
-				printf("Not at dest. Going random -- %f, %f \n", myDest.x, myDest.y);
+				//printf("Not at dest. Going random -- %f, %f \n", myDest.x, myDest.y);
 			}
 		}
 		
@@ -158,12 +158,12 @@ public:
 		{
 			if (isAtTree(animal, tree) == true) {
 				//check if tree available
-				printf("Im at a tree\n");
+				//printf("Im at a tree\n");
 				animalState = PROBE;
 			}
 			else if (isAtTree(animal, tree) == false && animalState == STABLE){
 				setRandomDest(animal);
-				printf("At destination cant find tree. Going random -- %f, %f \n", myDest.x, myDest.y);
+				//printf("At destination cant find tree. Going random -- %f, %f \n", myDest.x, myDest.y);
 			}				
 		}
 	}
@@ -187,7 +187,7 @@ public:
 		//check tree validity
 		if (animalState == PROBE && canEatFromTree(tree) == true) {
 			//ok to eat, start eating
-			printf("I can eat!\n");
+			//printf("I can eat!\n");
 			animalState = EATING;
 		}
 
@@ -198,7 +198,7 @@ public:
 			// grow tree
 			//tree->scale;
 
-			printf("I am eating now.\n");
+			//printf("I am eating now.\n");
 
 		}
 	}

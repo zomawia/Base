@@ -14,13 +14,14 @@ class Factory
 	ObjectPool<Sprite>    sprites;
 	ObjectPool<Lifetime>  lifetimes;
 	ObjectPool<Camera>    cameras;
-	ObjectPool<Text>	  texts;
+	ObjectPool<Text>	  texts;	
 
 	ObjectPool<PlayerController> controllers;
 	ObjectPool<CameraController> cameraControllers;
 	
-	ObjectPool<Animal> animals;
-	ObjectPool<Tree> trees;
+	ObjectPool<Animal>	animals;
+	ObjectPool<Tree>	trees;
+	ObjectPool<Button>	buttons;
 	
 
 public:
@@ -33,8 +34,8 @@ public:
 	Factory(size_t size = 512)
 		: entities(size), transforms(size), rigidbodies(size),
 		colliders(size), sprites(size), lifetimes(size),
-		cameras(size), controllers(size), texts(size),
-		cameraControllers(size), animals(size), trees(size)
+		cameras(1), controllers(1), texts(size),
+		cameraControllers(1), animals(size), trees(size), buttons(20)
 	{
 	}
 
@@ -50,6 +51,31 @@ public:
 		e->camera->offset = vec2{w2,h2};
 		e->camera->scale = vec2{ zoom,zoom };
 		e->cameraControllers = cameraControllers.push();
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnButton(unsigned sprite, unsigned font, float x, float y, float w, float h, char *text)
+	{
+		auto e = entities.push();
+		e->transform = transforms.push();
+		e->button = buttons.push();		
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+
+		e->button->setString(text);
+
+		e->transform->setLocalScale(vec2{ 48,48 });
+
+		e->button->sprite_id = font;
+		e->button->offset = vec2{ -24,-24 };
+		e->button->off_scale = vec2{ .5f,.5f };
+		
+		//e->sprite->sprite_id = sprite;
+		//e->sprite->dimensions = vec2{ w,h };
+		//	e->sprite->tint = WHITE;
+		
+		e->transform->setLocalPosition(vec2{ x,y });
+		
 		return e;
 	}
 
