@@ -6,7 +6,7 @@ using namespace base;
 
 class Button {
 public:
-	char m_characters[10];
+	char m_characters[80];
 
 public:
 	unsigned sprite_id;
@@ -27,7 +27,7 @@ public:
 
 	void update(Transform *transform, const Transform *cam) {		
 		// button transform is camera controllers transform
-		transform->setGlobalPosition(cam->getGlobalPosition());
+		transform->setGlobalPosition(cam->getGlobalPosition() + offset);
 	}
 
 

@@ -34,8 +34,8 @@ public:
 	Factory(size_t size = 512)
 		: entities(size), transforms(size), rigidbodies(size),
 		colliders(size), sprites(size), lifetimes(size),
-		cameras(1), controllers(1), texts(size),
-		cameraControllers(1), animals(size), trees(size), buttons(20)
+		cameras(size), controllers(size), texts(size),
+		cameraControllers(size), animals(size), trees(size), buttons(size)
 	{
 	}
 
@@ -64,10 +64,13 @@ public:
 
 		e->button->setString(text);
 
-		e->transform->setLocalScale(vec2{ 48,48 });
+		e->transform->setLocalScale(vec2{ 64,64 });
 
-		e->button->sprite_id = font;
-		e->button->offset = vec2{ -24,-24 };
+		e->button->sprite_id = sprite;
+		e->button->frame_id = 0;
+		e->button->dimensions = vec2{ w,h };
+		e->button->font = font;
+		e->button->offset = vec2{ -100,-30 };
 		e->button->off_scale = vec2{ .5f,.5f };
 		
 		//e->sprite->sprite_id = sprite;
@@ -176,9 +179,9 @@ public:
 		auto e = entities.push();
 
 		e->transform = transforms.push();
-		e->rigidbody = rigidbodies.push();
+		//e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
-		e->collider = colliders.push();
+		//e->collider = colliders.push();
 
 		e->transform->setLocalScale(vec2{ 12,12 });
 

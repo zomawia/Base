@@ -49,7 +49,13 @@ public:
 
 		factory.spawnStaticImage(spr_space, 0, -450, 3600, 2000);
 
-		factory.spawnButton(spr_button, spr_HUDfont, 50,50,24,24,"ass3");
+		factory.spawnButton(spr_button, spr_HUDfont, 0,0,0,0,"ass3");
+
+		factory.spawnButton(spr_button, spr_HUDfont, 0, 0, 0, 0, "animal");
+
+		factory.spawnButton(spr_button, spr_HUDfont, 0, 0, 0, 0, "tree");
+
+
 
 		for (int i = 0; i < 10; ++i) {
 			factory.spawnTree(spr_tree1);
@@ -213,13 +219,15 @@ public:
 			else if (e.transform && !e.transform->getAffectedByScale() && e.sprite)
 				e.sprite->draw(&e.transform, cam);
 		}
+
 		// draw text
 		for each(auto &e in factory) {
 			if (e.transform && e.text)
 				e.text->draw(&e.transform, cam);
 
-			if (e.button)
+			if (e.button) {
 				e.button->draw(&e.transform, cam);
+			}
 		}
 
 
