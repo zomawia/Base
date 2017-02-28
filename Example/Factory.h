@@ -54,31 +54,59 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnButton(unsigned sprite, unsigned font, float x, float y, float w, float h, char *text)
-	{
+	ObjectPool<Entity>::iterator spawnButton(unsigned sprite, unsigned font, 
+		float x, float y, 
+		float w, float h, 
+		char *text)	{
 		auto e = entities.push();
 		e->transform = transforms.push();
 		e->button = buttons.push();		
-		e->sprite = sprites.push();
+		//e->sprite = sprites.push();
 		e->collider = colliders.push();
+		
 
 		e->button->setString(text);
 
-		e->transform->setLocalScale(vec2{ 64,64 });
+		e->transform->setLocalScale(vec2{ 76,76 });
 
 		e->button->sprite_id = sprite;
 		e->button->frame_id = 0;
 		e->button->dimensions = vec2{ w,h };
 		e->button->font = font;
-		e->button->offset = vec2{ -100,-30 };
-		e->button->off_scale = vec2{ .5f,.5f };
+		e->button->offset = vec2{ x,y };
 		
 		//e->sprite->sprite_id = sprite;
 		//e->sprite->dimensions = vec2{ w,h };
 		//	e->sprite->tint = WHITE;
 		
-		e->transform->setLocalPosition(vec2{ x,y });
-		
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnController(unsigned sprite, unsigned font, bool isScaled = false)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->collider = colliders.push();
+		e->sprite = sprites.push();
+		e->controller = controllers.push();
+
+		e->text = texts.push();
+
+		e->text->sprite_id = font;
+		e->text->offset = vec2{ -24,-24 };
+		e->text->off_scale = vec2{.5f,.5f};
+		e->text->setString("assblast");
+
+		e->transform->setLocalScale(vec2{12,12});
+
+		e->sprite->sprite_id = sprite;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
 		return e;
 	}
 
@@ -88,63 +116,11 @@ public:
 		e->transform = transforms.push();
 		e->sprite = sprites.push();
 		e->sprite->sprite_id = sprite;
-		e->sprite->dimensions = vec2{w,h};
-	//	e->sprite->tint = WHITE;
-		e->transform->setLocalPosition(vec2{ x,y });	
+		e->sprite->dimensions = vec2{ w,h };
+		//	e->sprite->tint = WHITE;
+		e->transform->setLocalPosition(vec2{ x,y });
 		return e;
 	}
-
-	ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction)
-	{
-		auto e = entities.push();
-
-		e->transform = transforms.push();
-		e->rigidbody = rigidbodies.push();
-		e->sprite = sprites.push();
-		e->lifetime = lifetimes.push();
-		e->collider = colliders.push();
-
-		e->transform->setLocalPosition(pos);
-		e->transform->setLocalScale(dim);
-		e->transform->setLocalAngle(ang);
-
-		e->sprite->sprite_id = sprite;
-		e->sprite->dimensions = vec2{1.2f, 1.2f};
-
-		e->rigidbody->addImpulse(e->transform->getGlobalUp() * impulse);
-
-		e->lifetime->lifespan = 1.6f;
-		
-		return e;
-	}
-
-	ObjectPool<Entity>::iterator spawnPlayer(unsigned sprite, unsigned font, bool isScaled = false)
-	{
-		auto e = entities.push();
-
-		e->transform = transforms.push();
-		e->rigidbody = rigidbodies.push();
-		e->sprite = sprites.push();
-		e->collider = colliders.push();
-		e->controller = controllers.push();
-		e->text = texts.push();
-
-		e->text->sprite_id = font;
-		e->text->offset = vec2{ -24,-24 };
-		e->text->off_scale = vec2{.5f,.5f};
-		e->text->setString("assblast");
-
-		e->transform->setLocalScale(vec2{48,48});
-
-		e->sprite->sprite_id = sprite;
-
-		if (isScaled == true) {
-			e->transform->setBeAffectedByScale();
-		}
-
-		return e;
-	}
-
 
 	ObjectPool<Entity>::iterator spawnTree(unsigned sprite, bool isScaled = true)
 	{
@@ -155,6 +131,9 @@ public:
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
+		//e->lifetime = lifetimes.push();
+
+		//e->lifetime->lifespan = 20.f;
 
 		e->transform->setLocalScale(vec2{ 48,48 });
 		
@@ -231,6 +210,8 @@ public:
 		e->collider = colliders.push();
 		e->text = texts.push();
 
+		//e->lifetime = lifetimes.push();
+
 		e->transform->setLocalScale(vec2{ 30,20 });
 
 		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, -100) });
@@ -250,6 +231,29 @@ public:
 		return e;
 	}
 
+	ObjectPool<Entity>::iterator spawnBullet(unsigned sprite, vec2 pos, vec2 dim, float ang, float impulse, unsigned faction)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->lifetime = lifetimes.push();
+		e->collider = colliders.push();
+
+		e->transform->setLocalPosition(pos);
+		e->transform->setLocalScale(dim);
+		e->transform->setLocalAngle(ang);
+
+		e->sprite->sprite_id = sprite;
+		e->sprite->dimensions = vec2{ 1.2f, 1.2f };
+
+		e->rigidbody->addImpulse(e->transform->getGlobalUp() * impulse);
+
+		e->lifetime->lifespan = 1.6f;
+
+		return e;
+	}
 };
 
 

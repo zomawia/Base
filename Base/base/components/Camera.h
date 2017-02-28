@@ -24,5 +24,11 @@ namespace base
 		{
 			return (getCameraMatrix(T) * vec3 { P, 1 }).xy;
 		}
+
+		vec2 getScreenPointToWorldPoint(const Transform *T, const vec2& S)
+		{
+			return (getCameraMatrix(T).inverse() * vec3 { S, 1 }).xy;
+		}
+
 	};
 }

@@ -29,7 +29,7 @@ public:
 
 	unsigned int *name;
 	
-	Animal(float moveSpd = 20, float eat = .75f, float m_weight = 10,
+	Animal(float moveSpd = 20, float eat = .55f, float m_weight = 10,
 		vec2 m_scale = { 30,20 }, float m_range = 300, float sTimer = 0)
 		: moveSpeed(moveSpd), eatSpeed(eat), weight(m_weight), scale(m_scale) ,
 		walkRange(m_range), atTree(false), myDest(vec2{NULL,NULL}), goingRandom(false),
@@ -204,7 +204,7 @@ public:
 	}
 
 	bool shouldThisAnimaBeEuthanisedOrBePutDeathPermanently(){
-		if (scale.x > 225) return true;
+		if (scale.x > 175) return true;
 		else return false;
 	}
 

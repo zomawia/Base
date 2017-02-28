@@ -9,12 +9,9 @@ class GameState : public BaseState
 	Factory factory;
 	
 	unsigned spr_space, spr_gras1, spr_gras2, 
-		spr_tree1, spr_tree2,
-		spr_rock1, spr_rock2,
-		spr_animal, spr_font,
-		spr_HUDfont, spr_button;
+		spr_tree1, spr_tree2, spr_rock1, spr_rock2,	spr_animal, spr_font,
+		spr_HUDfont, spr_button, spr_cursor;
 	ObjectPool<Entity>::iterator currentCamera;
-
 
 public:
 	float frameTimer;
@@ -35,6 +32,7 @@ public:
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 		spr_button = sfw::loadTextureMap("../res/button.png");
 		spr_HUDfont = sfw::loadTextureMap("../res/uglyfont.png", 16, 16);
+		spr_cursor = sfw::loadTextureMap("../res/cursor.gif");
 
 	}
 
@@ -49,13 +47,13 @@ public:
 
 		factory.spawnStaticImage(spr_space, 0, -450, 3600, 2000);
 
-		factory.spawnButton(spr_button, spr_HUDfont, 0,0,0,0,"ass3");
+		factory.spawnButton(spr_button, spr_HUDfont, -50, -50, 12, 14, "ass3");
+		factory.spawnButton(spr_button, spr_HUDfont, -50, -130, 12, 14, "animal");
+		factory.spawnButton(spr_button, spr_HUDfont, -50, -210, 12, 14, "tree");
+		factory.spawnButton(spr_button, spr_HUDfont, -50, -290, 12, 14, "wind");
+		factory.spawnButton(spr_button, spr_HUDfont, -50, -370, 12, 14, "time");
 
-		factory.spawnButton(spr_button, spr_HUDfont, 0, 0, 0, 0, "animal");
-
-		factory.spawnButton(spr_button, spr_HUDfont, 0, 0, 0, 0, "tree");
-
-
+		factory.spawnController(spr_cursor, spr_font);
 
 		for (int i = 0; i < 10; ++i) {
 			factory.spawnTree(spr_tree1);
@@ -106,9 +104,13 @@ public:
 				e.rigidbody->integrate(&e.transform, dt);
 
 			// controller update
-			if (e.transform && e.rigidbody && e.controller)
-			{
-				
+			if (e.controller)
+			{				
+				vec2 screenMouse = { sfw::getMouseX(), sfw::getMouseY() };
+				vec2 worldMouse = currentCamera->camera->getScreenPointToWorldPoint(&currentCamera->transform, screenMouse);				
+
+				e.controller->poll(&e.transform, worldMouse, dt);
+
 			}
 
 			if (e.cameraControllers) {
@@ -163,27 +165,40 @@ public:
 		// Physics system!		
 		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
 			for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
-				//if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
+
+				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
 				// if they aren't the same and they both have collidable bits...
-				{
+				{					
 					//// test their bounding boxes
-					//if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
-					//{
-					//	// if true, get the penetration and normal from the convex hulls
-					//	auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
-					//	
-					//	// if there was a collision,
-					//	if (cd.result())
-					//	{
-					//		// condition for dynamic resolution
-					//		if (it->rigidbody && bit->rigidbody)
-					//			base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
-					//		
-					//		// condition for static resolution
-					//		else if (it->rigidbody && !bit->rigidbody)							
-					//			base::StaticResolution(cd, &it->transform, &it->rigidbody);					
-					//	}
-					//}
+					if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
+					{					
+						// if true, get the penetration and normal from the convex hulls
+						auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
+						
+						// if there was a collision,
+						if (cd.result() && it->button)
+						{						
+							
+							if (bit->controller) {								
+								it->button->mouseOver = true;
+								if (bit->controller->isClicked == true) {									
+										
+										factory.spawnAnimal(spr_animal, spr_font);
+								}
+							}
+
+							// condition for dynamic resolution
+							//if (it->rigidbody && bit->rigidbody)
+							//	base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
+							
+							// condition for static resolution
+							//else if (it->rigidbody && !bit->rigidbody)							
+							//	base::StaticResolution(cd, &it->transform, &it->rigidbody);							
+						}
+						if (it->button) {
+							it->button->mouseOver = false;
+						}
+					}
 				}
 
 	}
@@ -196,7 +211,7 @@ public:
 		float camX = currentCamera->transform->getGlobalPosition().x;
 		float camY = currentCamera->transform->getGlobalPosition().y;
 
-		printf("x:%f   y:%f\n", camX, camY);
+		//printf("x:%f   y:%f\n", camX, camY);
 
 		// kind of round about, but this is the camera matrix from the factory's current camera
 		auto cam = currentCamera->camera->getCameraMatrix(&currentCamera->transform);
@@ -213,23 +228,37 @@ public:
 				}
 			}
 
+						if (e.transform && e.collider)
+							e.collider->draw(&e.transform, cam);
+
 			
-			if (e.transform->getAffectedByScale() && e.sprite)
+			if (e.transform->getAffectedByScale() && e.sprite) {
 				e.sprite->scaleDraw(&e.transform, cam, &currentCamera->transform);
-			else if (e.transform && !e.transform->getAffectedByScale() && e.sprite)
-				e.sprite->draw(&e.transform, cam);
+			}
+
+			if (!e.transform->getAffectedByScale() && !e.controller && e.transform && e.sprite) {
+				if (!e.button)
+					e.sprite->draw(&e.transform, cam);
+			}
+			
 		}
 
 		// draw text
 		for each(auto &e in factory) {
-			if (e.transform && e.text)
+			if (e.transform && e.text && !e.button)
 				e.text->draw(&e.transform, cam);
 
 			if (e.button) {
 				e.button->draw(&e.transform, cam);
 			}
+
+			if (e.controller)
+				e.sprite->draw(&e.transform, cam);
 		}
 
+		//sfw::drawTexture(spr_cursor, sfw::getMouseX(), sfw::getMouseY(), 25, 25, 0.f, true, 0U, RED);
+	}
+};
 
 //#ifdef _DEBUG
 //		
@@ -249,5 +278,3 @@ public:
 //			if (e.transform && e.rigidbody)
 //				e.rigidbody->draw(&e.transform, cam);
 //#endif
-	}
-};
