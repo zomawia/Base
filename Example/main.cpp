@@ -3,6 +3,7 @@
 
 #include "sfwdraw.h"
 #include "GameState.h"
+#include "MenuState.h"
 #include <time.h>
 
 
@@ -18,6 +19,7 @@ void main()
 	srand(time(0));
 
 	GameState gs;
+	MenuState ms;
 
 	gs.init(); // called once
 

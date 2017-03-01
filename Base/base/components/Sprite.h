@@ -57,7 +57,7 @@ public:
 
 		//shadow
 		mat3 glob = C * T->getGlobalTransform() * mat3::translate(1.5f, 0) * mat3::rotate(0) * mat3::shear(1) * mat3::scale(dimensions * sc);
-		sfw::drawTextureMatrix3(sprite_id, frame_id, BLACK, glob.v, 0);
+		sfw::drawTextureMatrix3(sprite_id, frame_id, BLACK, glob.v, 1);
 
 		glob = C * T->getGlobalTransform() * mat3::translate(offset) * mat3::rotate(angle) * mat3::scale(dimensions * sc);
 		sfw::drawTextureMatrix3(sprite_id, frame_id, tint, glob.v, 0);

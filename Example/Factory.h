@@ -55,15 +55,12 @@ public:
 	}
 
 	ObjectPool<Entity>::iterator spawnButton(unsigned sprite, unsigned font, 
-		float x, float y, 
-		float w, float h, 
-		char *text)	{
+		float x, float y, float w, float h, char *text)	{
 		auto e = entities.push();
 		e->transform = transforms.push();
 		e->button = buttons.push();		
 		//e->sprite = sprites.push();
 		e->collider = colliders.push();
-		
 
 		e->button->setString(text);
 

@@ -12,9 +12,14 @@ class GameState : public BaseState
 		spr_tree1, spr_tree2, spr_rock1, spr_rock2,	spr_animal, spr_font,
 		spr_HUDfont, spr_button, spr_cursor;
 	ObjectPool<Entity>::iterator currentCamera;
-
+	ObjectPool<Entity>::iterator buttonAnimal;
+	ObjectPool<Entity>::iterator buttonTree;
+	ObjectPool<Entity>::iterator buttonTime;
+	ObjectPool<Entity>::iterator buttonWind;
+	ObjectPool<Entity>::iterator buttonAss3;
 public:
-	float frameTimer;
+	float dtMult = 1.f;
+
 	virtual void init()
 	{
 		//spr_bullet = sfw::loadTextureMap("../res/bullet.png");
@@ -47,11 +52,11 @@ public:
 
 		factory.spawnStaticImage(spr_space, 0, -450, 3600, 2000);
 
-		factory.spawnButton(spr_button, spr_HUDfont, -50, -50, 12, 14, "ass3");
-		factory.spawnButton(spr_button, spr_HUDfont, -50, -130, 12, 14, "animal");
-		factory.spawnButton(spr_button, spr_HUDfont, -50, -210, 12, 14, "tree");
-		factory.spawnButton(spr_button, spr_HUDfont, -50, -290, 12, 14, "wind");
-		factory.spawnButton(spr_button, spr_HUDfont, -50, -370, 12, 14, "time");
+		buttonAss3		= factory.spawnButton(spr_button, spr_HUDfont, -50, -50, 12, 14, "ass3");
+		buttonAnimal	= factory.spawnButton(spr_button, spr_HUDfont, -50, -130, 12, 14, "animal");
+		buttonTree		= factory.spawnButton(spr_button, spr_HUDfont, -50, -210, 12, 14, "tree");
+		buttonWind		= factory.spawnButton(spr_button, spr_HUDfont, -50, -290, 12, 14, "wind");
+		buttonTime		= factory.spawnButton(spr_button, spr_HUDfont, -50, -370, 12, 14, "time");
 
 		factory.spawnController(spr_cursor, spr_font);
 
@@ -85,7 +90,7 @@ public:
 	// update loop, where 'systems' exist
 	virtual void step()
 	{
-		float dt = sfw::getDeltaTime();
+		float dt = sfw::getDeltaTime() * dtMult;
 
 		// maybe spawn some asteroids here.		
 
@@ -176,15 +181,26 @@ public:
 						auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
 						
 						// if there was a collision,
-						if (cd.result() && it->button)
+						if (cd.result() && it->button && bit->controller && bit->controller->isClicked == true)
 						{						
-							
-							if (bit->controller) {								
-								it->button->mouseOver = true;
-								if (bit->controller->isClicked == true) {									
-										
-										factory.spawnAnimal(spr_animal, spr_font);
-								}
+							if (it->button == buttonAnimal->button){																												
+									factory.spawnAnimal(spr_animal, spr_font);
+									printf("spawned animal\n");
+							}
+
+							else if (it->button == buttonTree->button) {
+								int c = randomRange(0, 1);
+								c = 1 ? factory.spawnTree(spr_tree1, spr_font)
+									: factory.spawnTree(spr_tree2, spr_font);
+								printf("spawned tree\n");
+							}
+
+							else if (it->button == buttonTime->button) {
+								dtMult += 1.0f;
+
+								if (dtMult > 3)
+									dtMult = 1.f;
+								printf("increased time mult to: %f\n", dtMult);
 							}
 
 							// condition for dynamic resolution
@@ -200,6 +216,19 @@ public:
 						}
 					}
 				}
+
+		//sort transforms
+		for (auto it = factory.begin(); it != factory.end(); it++)
+			for (auto bit = it; bit != factory.end(); bit++) {
+				if (it != bit && it->transform && bit->transform) {
+					if (bit->transform->getGlobalPosition().y < it->transform->getGlobalPosition().y) {
+					
+						
+					}
+				}
+
+			}
+		
 
 	}
 

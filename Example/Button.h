@@ -5,7 +5,11 @@
 using namespace base;
 
 class Button {
+	enum ButtonState {
+		ASS3, ANIMAL, TREE, WIND, TIME
+	};
 public:
+	ButtonState buttonType;
 	bool mouseOver;
 	char m_characters[80];
 	unsigned sprite_id;

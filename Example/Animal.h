@@ -204,7 +204,7 @@ public:
 	}
 
 	bool shouldThisAnimaBeEuthanisedOrBePutDeathPermanently(){
-		if (scale.x > 175) return true;
+		if (scale.x > 100) return true;
 		else return false;
 	}
 
