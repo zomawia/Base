@@ -60,7 +60,7 @@ public:
 
 		factory.spawnController(spr_cursor, spr_font);
 
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 6; ++i) {
 			factory.spawnTree(spr_tree1);
 			factory.spawnTree(spr_tree2);
 
@@ -211,9 +211,6 @@ public:
 							//else if (it->rigidbody && !bit->rigidbody)							
 							//	base::StaticResolution(cd, &it->transform, &it->rigidbody);							
 						}
-						if (it->button) {
-							it->button->mouseOver = false;
-						}
 					}
 				}
 
@@ -284,8 +281,6 @@ public:
 			if (e.controller)
 				e.sprite->draw(&e.transform, cam);
 		}
-
-		//sfw::drawTexture(spr_cursor, sfw::getMouseX(), sfw::getMouseY(), 25, 25, 0.f, true, 0U, RED);
 	}
 };
 

@@ -17,6 +17,35 @@ void main()
 	sfw::initContext(1600U, 900);
 
 	srand(time(0));
+	
+	MenuState ms;
+
+	ms.init(); // called once
+
+	ms.play(); // Should be called each time the state is transitioned into
+
+	while (sfw::stepContext())
+	{
+		ms.step(); // called each update
+		ms.draw(); // called each update
+
+				   //gs.next(); Determine the ID of the next state to transition to.
+	}
+
+	ms.stop(); // should be called each time the state is transitioned out of
+
+	ms.term(); // called once
+
+
+	sfw::termContext();
+
+}
+
+void main2()
+{
+	sfw::initContext(1600U, 900);
+
+	srand(time(0));
 
 	GameState gs;
 	MenuState ms;

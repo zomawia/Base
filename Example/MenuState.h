@@ -4,21 +4,42 @@
 #include "BaseState.h"
 #include "Factory.h"
 
+//main menu first screen splash yes
+
 class MenuState : public BaseState
 {
 	Factory factory;
 
-	unsigned spr_button, spr_cursor, spr_space, spr_font, spr_HUDfont;
+	unsigned spr_space, spr_gras1, spr_gras2,
+		spr_tree1, spr_tree2, spr_rock1, spr_rock2, spr_animal, spr_font,
+		spr_HUDfont, spr_button, spr_cursor, spr_title;
+
 	ObjectPool<Entity>::iterator currentCamera;
+	ObjectPool<Entity>::iterator background;
 	ObjectPool<Entity>::iterator buttonPlay;
 	ObjectPool<Entity>::iterator buttonExit;
-	
-	virtual void init() {
+
+	bool backGroundFinishedMoving;
+	bool runOnce;
+
+public:	
+	virtual void init() {	
+
+		spr_rock1 = sfw::loadTextureMap("../res/rock1.png");
+		spr_rock2 = sfw::loadTextureMap("../res/rock2.png");
+		spr_tree1 = sfw::loadTextureMap("../res/tree1.png");
+		spr_tree2 = sfw::loadTextureMap("../res/tree2.png");
 		spr_space = sfw::loadTextureMap("../res/space.png");
+		spr_gras1 = sfw::loadTextureMap("../res/grass1.png");
+		spr_gras2 = sfw::loadTextureMap("../res/grass2.png");
+		spr_animal = sfw::loadTextureMap("../res/animal.png", 3, 2);
+
 		spr_font = sfw::loadTextureMap("../res/font.png", 32, 4);
 		spr_button = sfw::loadTextureMap("../res/button.png");
 		spr_HUDfont = sfw::loadTextureMap("../res/uglyfont.png", 16, 16);
 		spr_cursor = sfw::loadTextureMap("../res/cursor.gif");
+
+		spr_title = sfw::loadTextureMap("../res/gameTitle.png");
 
 	}
 
@@ -29,9 +50,17 @@ class MenuState : public BaseState
 		currentCamera = factory.spawnCamera(1600, 900, 1);
 		currentCamera->transform->setGlobalPosition(vec2{ 800, 0 });
 
-		factory.spawnStaticImage(spr_space, 0, -450, 3600, 2000);
+		background = factory.spawnStaticImage(spr_space, 0, -450, 3200, 1800);
 
+		factory.spawnStaticImage(spr_animal, -200, -650, 120, 100);
+		factory.spawnStaticImage(spr_animal, -800, -520, 110, 95);
+		factory.spawnStaticImage(spr_tree1, 120, -815, 150, 150);
+		factory.spawnStaticImage(spr_tree2, 700, -640, 140, 140);
 
+		factory.spawnController(spr_cursor, spr_font);
+
+		backGroundFinishedMoving = false;
+		runOnce = false;
 	}
 
 	virtual void stop()
@@ -39,24 +68,44 @@ class MenuState : public BaseState
 
 	}
 
-	virtual size_t next() const { return 0; }
+	virtual size_t next() const { return 1; }
 
 
 	// update loop, where 'systems' exist
-	virtual void step()	{
+	virtual void step() {
 		float dt = sfw::getDeltaTime();
 
 		// maybe spawn some asteroids here.		
+
+		float posX = background->transform->getGlobalPosition().x;
+		float posY = background->transform->getGlobalPosition().y;
+		printf("%f\n", posY);
+
+		if (posY > -800) {
+			background->transform->setGlobalPosition({ posX, posY - 75 * dt });
+		}
+		else {
+			backGroundFinishedMoving = true;
+		}
+
+		if (backGroundFinishedMoving == true && runOnce == false) {
+			buttonPlay = factory.spawnButton(spr_button, spr_HUDfont, -500, -90, 12, 14, "PLAY (P)");
+			buttonPlay->transform->setLocalScale({ 140, 80 });
+			buttonPlay->button->tint = WHITE;
+
+			buttonExit = factory.spawnButton(spr_button, spr_HUDfont, -300, -190, 12, 14, "EXIT (E)");
+			buttonExit->transform->setLocalScale({ 140, 80 });
+			buttonExit->button->tint = WHITE;
+
+			factory.spawnStaticImage(spr_title, 0, -400, 900, 500);
+
+			runOnce = true;
+		}
 
 		for (auto it = factory.begin(); it != factory.end();) // no++!
 		{
 			bool del = false; // does this entity end up dying?
 			auto &e = *it;    // convenience reference
-
-			// state-machine updates
-			if (e.animal) {
-				e.text->setString(e.animal->getStateToChar());
-			}
 
 			// controller update
 			if (e.controller)
@@ -75,14 +124,6 @@ class MenuState : public BaseState
 				e.button->update(&e.transform, &currentCamera->transform);
 			}
 
-			// lifetime decay update
-			if (e.lifetime)
-			{
-				e.lifetime->age(dt);
-				if (!e.lifetime->isAlive())
-					del = true;
-			}
-
 			// ++ here, because free increments in case of deletions
 			if (!del) it++;
 			else
@@ -91,6 +132,42 @@ class MenuState : public BaseState
 				it.free();
 			}
 		}
+
+		for (auto it = factory.begin(); it != factory.end(); it++) // for each entity
+			for (auto bit = it; bit != factory.end(); bit++)		  // for every other entity
+
+				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
+					// if they aren't the same and they both have collidable bits...
+				{
+					//// test their bounding boxes
+					if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
+					{
+						// if true, get the penetration and normal from the convex hulls
+						auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
+
+						// if there was a collision,
+						if (cd.result() && it->button && bit->controller && bit->controller->isClicked == true)
+						{
+							if (it->button == buttonPlay->button || sfw::getKey('P')) {
+								next();
+								printf("next\n");
+							}
+
+							else if (it->button == buttonExit->button || sfw::getKey('E')) {
+								!sfw::stepContext();
+								printf("strepcontext\n");
+							}
+
+							// condition for dynamic resolution
+							//if (it->rigidbody && bit->rigidbody)
+							//	base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
+
+							// condition for static resolution
+							//else if (it->rigidbody && !bit->rigidbody)							
+							//	base::StaticResolution(cd, &it->transform, &it->rigidbody);							
+						}
+					}
+				}
 	}
 
 
@@ -103,6 +180,35 @@ class MenuState : public BaseState
 
 		// kind of round about, but this is the camera matrix from the factory's current camera
 		auto cam = currentCamera->camera->getCameraMatrix(&currentCamera->transform);
+
+		// draw sprites
+		for each(auto &e in factory)
+		{
+			if (e.transform && e.collider)
+				e.collider->draw(&e.transform, cam);
+
+			if (e.transform->getAffectedByScale() && e.sprite) {
+				e.sprite->scaleDraw(&e.transform, cam, &currentCamera->transform);
+			}
+
+			if (!e.transform->getAffectedByScale() && !e.controller && e.transform && e.sprite) {
+				if (!e.button)
+					e.sprite->draw(&e.transform, cam);
+			}
+		}
+
+		// draw text
+		for each(auto &e in factory) {
+			if (e.transform && e.text && !e.button)
+				e.text->draw(&e.transform, cam);
+
+			if (e.button) {
+				e.button->draw(&e.transform, cam);
+			}
+
+			if (e.controller)
+				e.sprite->draw(&e.transform, cam);
+		}
 
 
 
