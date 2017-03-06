@@ -1,4 +1,5 @@
 // Ass3 by Zomawia Sailo
+// MASTER
 // zomawia@gmail.com
 
 #include "sfwdraw.h"
