@@ -38,7 +38,7 @@ public:
 		spr_font = sfw::loadTextureMap("../res/font.png",32,4);
 		spr_button = sfw::loadTextureMap("../res/button.png");
 		spr_HUDfont = sfw::loadTextureMap("../res/uglyfont.png", 16, 16);
-		spr_cursor = sfw::loadTextureMap("../res/cursor.gif");
+		spr_cursor = sfw::loadTextureMap("../res/cursor.png");
 
 	}
 
