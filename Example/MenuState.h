@@ -64,7 +64,7 @@ public:
 	}
 
 	virtual size_t next() const {
-		if (sfw::getKey('P'))
+		if (sfw::getKey('P') || sfw::getKey(KEY_ENTER))
 			return ENTER_GAME;
 
 		if (sfw::getKey('E') || sfw::getKey(KEY_ESCAPE))
@@ -222,8 +222,5 @@ public:
 			if (e.controller)
 				e.sprite->draw(&e.transform, cam);
 		}
-
-
-
 	}
 };
