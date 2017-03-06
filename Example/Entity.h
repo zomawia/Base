@@ -7,6 +7,9 @@
 #include "Animal.h"
 #include "Tree.h"
 #include "Button.h"
+#include "Wind.h"
+#include "Rock.h"
+#include "Egg.h"
 
 using namespace base;
 
@@ -26,6 +29,10 @@ public:
 	ObjectPool<Animal>::iterator animal;
 	ObjectPool<Tree>::iterator tree;
 	ObjectPool<Button>::iterator button;
+	ObjectPool<Wind>::iterator wind;
+
+	ObjectPool<Rock>::iterator rock;
+	ObjectPool<Egg>::iterator egg;
 
 	// example of a component in this project
 	ObjectPool<PlayerController>::iterator controller;

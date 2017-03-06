@@ -10,7 +10,7 @@ class GameState : public BaseState
 	
 	unsigned spr_space, spr_gras1, spr_gras2, 
 		spr_tree1, spr_tree2, spr_rock1, spr_rock2,	spr_animal, spr_font,
-		spr_HUDfont, spr_button, spr_cursor;
+		spr_HUDfont, spr_button, spr_cursor, spr_wind, spr_egg;
 
 	ObjectPool<Entity>::iterator currentCamera;
 	ObjectPool<Entity>::iterator buttonAnimal;
@@ -39,6 +39,9 @@ public:
 		spr_button = sfw::loadTextureMap("../res/button.png");
 		spr_HUDfont = sfw::loadTextureMap("../res/uglyfont.png", 16, 16);
 		spr_cursor = sfw::loadTextureMap("../res/cursor.png");
+
+		spr_wind = sfw::loadTextureMap("../res/wind.png");
+		spr_egg = sfw::loadTextureMap("../res/eggfacts.png");
 
 	}
 
@@ -98,6 +101,13 @@ public:
 	{
 		float dt = sfw::getDeltaTime() * dtMult;
 
+		int windChance = randomRange(0, 100);
+
+		if (windChance == 20) {			
+			factory.spawnWind(spr_wind);
+			factory.spawnWind(spr_wind);
+		}
+
 		// maybe spawn some asteroids here.		
 
 		for (auto it = factory.begin(); it != factory.end();) // no++!
@@ -134,8 +144,15 @@ public:
 			if (e.lifetime)
 			{
 				e.lifetime->age(dt);
+
+				if (!e.lifetime->isAlive() && e.egg && e.egg->spawned == false) {
+					e.egg->spawned = true;
+					factory.spawnAnimal(spr_animal, spr_font, e.egg->myPos);
+				}
+				
 				if (!e.lifetime->isAlive())
 					del = true;
+
 			}
 
 			// ++ here, because free increments in case of deletions
@@ -150,9 +167,9 @@ public:
 
 		//animal do stuff
 		for (auto it = factory.begin(); it != factory.end(); it++) {
-			for (auto bit = it; bit != factory.end(); bit++)
-				if (it != bit && bit->animal && it->tree) 
-				{					
+			for (auto bit = it; bit != factory.end(); bit++) {
+				if (it != bit && bit->animal && it->tree)
+				{
 					bit->animal->setTarget(bit->transform, it->transform);
 					bit->animal->gotoDest(bit->transform, dt);
 					bit->animal->processEating(bit->transform, it->tree, dt);
@@ -163,8 +180,17 @@ public:
 						bit->onFree();
 						bit.free();
 					}
-					
 				}
+
+				if (it != bit && it->animal && bit->animal) {
+					it->animal->processEgging(it->transform, bit->transform);
+					if (it->animal->canLayEgg() == true) {
+						it->animal->layedEgg = true;
+						factory.spawnEgg(spr_egg, it->transform->getGlobalPosition());
+					}
+				}
+			}
+
 		}
 
 		//tree do stuff
@@ -173,63 +199,60 @@ public:
 
 		// Physics system!		
 		for(auto it = factory.begin(); it != factory.end(); it++) // for each entity
-			for(auto bit = it; bit != factory.end(); bit++)		  // for every other entity
+			for (auto bit = it; bit != factory.end(); bit++) {		  // for every other entity
+				if (!it->animal || !it->rock || !bit->animal || !bit->rock)
+				{
+					if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
+						// if they aren't the same and they both have collidable bits...
+					{
+						//// test their bounding boxes
+						if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
+						{
+							// if true, get the penetration and normal from the convex hulls
+							auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
 
-				if (it != bit && it->transform && it->collider && bit->transform && bit->collider)
-				// if they aren't the same and they both have collidable bits...
-				{					
-					//// test their bounding boxes
-					if (base::BoundsTest(&it->transform, &it->collider, &bit->transform, &bit->collider))
-					{					
-						// if true, get the penetration and normal from the convex hulls
-						auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
-						
-						// if there was a collision,
-						if (cd.result() && it->button && bit->controller && bit->controller->isClicked == true)
-						{						
-							if (it->button == buttonAnimal->button){																												
-									factory.spawnAnimal(spr_animal, spr_font);
-									printf("spawned animal\n");
-							}
-
-							else if (it->button == buttonTree->button) {
+							if (cd.result() && it->tree && bit->wind) {
 								int c = randomRange(0, 1);
-								c = 1 ? factory.spawnTree(spr_tree1, spr_font)
-									: factory.spawnTree(spr_tree2, spr_font);
-								printf("spawned tree\n");
+								c = 1 ? factory.spawnSapling(spr_tree1, it->transform->getGlobalPosition(), abs(bit->rigidbody->velocity.x))
+									: factory.spawnSapling(spr_tree2, it->transform->getGlobalPosition(), abs(bit->rigidbody->velocity.x));
 							}
 
-							else if (it->button == buttonTime->button) {
-								dtMult += 1.0f;
+							// if there was a collision,
+							if (cd.result() && it->button && bit->controller && bit->controller->isClicked == true)
+							{
+								if (it->button == buttonAnimal->button) {
+									factory.spawnAnimal(spr_animal, spr_font);
+									//printf("spawned animal\n");
+								}
 
-								if (dtMult > 3)
-									dtMult = 1.f;
-								printf("increased time mult to: %f\n", dtMult);
+								else if (it->button == buttonTree->button) {
+									int c = randomRange(0, 1);
+									c = 1 ? factory.spawnTree(spr_tree1, spr_font)
+										: factory.spawnTree(spr_tree2, spr_font);
+									//printf("spawned tree\n");
+								}
+
+								else if (it->button == buttonTime->button) {
+									dtMult += 1.0f;
+
+									if (dtMult > 3)
+										dtMult = 1.f;
+									//printf("increased time mult to: %f\n", dtMult);
+								}
+
+								else if (it->button == buttonWind->button) {
+									for (int i = 0; i < 20; ++i)
+										factory.spawnWind(spr_wind);
+								}
+
+								else if (it->button == buttonAss3->button) {
+									factory.spawnEgg(spr_egg, { 0, -300 });
+								}
 							}
-
-							// condition for dynamic resolution
-							//if (it->rigidbody && bit->rigidbody)
-							//	base::DynamicResolution(cd,&it->transform,&it->rigidbody, &bit->transform, &bit->rigidbody);
-							
-							// condition for static resolution
-							//else if (it->rigidbody && !bit->rigidbody)							
-							//	base::StaticResolution(cd, &it->transform, &it->rigidbody);							
 						}
 					}
-				}
-
-		//sort transforms
-		for (auto it = factory.begin(); it != factory.end(); it++)
-			for (auto bit = it; bit != factory.end(); bit++) {
-				if (it != bit && it->transform && bit->transform) {
-					if (bit->transform->getGlobalPosition().y < it->transform->getGlobalPosition().y) {
-					
-						
-					}
-				}
-
+				}				
 			}
-		
 
 	}
 
@@ -249,18 +272,8 @@ public:
 		// draw sprites
 		for each(auto &e in factory)
 		{
-			if (e.animal) {
-				if (e.animal->dir == 0) {
-					//e.sprite->frame_id = frameID % 3 + dir * 3;
-				}
-				if (e.animal->dir == 1) {
-					//e.sprite->scaleAnimDraw(&e.transform, cam, &currentCamera->transform, 1, dt);
-				}
-			}
-
-						if (e.transform && e.collider)
-							e.collider->draw(&e.transform, cam);
-
+			//if (e.transform && e.collider)
+			//	e.collider->draw(&e.transform, cam);
 			
 			if (e.transform->getAffectedByScale() && e.sprite) {
 				e.sprite->scaleDraw(&e.transform, cam, &currentCamera->transform);
@@ -269,8 +282,7 @@ public:
 			if (!e.transform->getAffectedByScale() && !e.controller && e.transform && e.sprite) {
 				if (!e.button)
 					e.sprite->draw(&e.transform, cam);
-			}
-			
+			}			
 		}
 
 		// draw text

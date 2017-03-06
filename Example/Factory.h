@@ -22,7 +22,10 @@ class Factory
 	ObjectPool<Animal>	animals;
 	ObjectPool<Tree>	trees;
 	ObjectPool<Button>	buttons;
-	
+
+	ObjectPool<Wind>	winds;
+	ObjectPool<Rock>	rocks;
+	ObjectPool<Egg>		eggs;
 
 public:
 
@@ -34,8 +37,9 @@ public:
 	Factory(size_t size = 512)
 		: entities(size), transforms(size), rigidbodies(size),
 		colliders(size), sprites(size), lifetimes(size),
-		cameras(size), controllers(size), texts(size),
-		cameraControllers(size), animals(size), trees(size), buttons(size)
+		cameras(10), controllers(size), texts(size),
+		cameraControllers(10), animals(size), trees(size), buttons(20), winds(size),
+		rocks(size), eggs(size)
 	{
 	}
 
@@ -94,7 +98,7 @@ public:
 		e->text->sprite_id = font;
 		e->text->offset = vec2{ -24,-24 };
 		e->text->off_scale = vec2{.5f,.5f};
-		//e->text->setString("assblast");
+		e->text->setString("ass3");
 
 		e->transform->setLocalScale(vec2{12,12});
 
@@ -150,10 +154,70 @@ public:
 		return e;
 	}
 
+	ObjectPool<Entity>::iterator spawnSapling(unsigned sprite, vec2 pos, float windOffset, bool isScaled = true)
+	{
+		auto e = entities.push();
+
+		e->tree = trees.push();
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->sprite = sprites.push();
+		e->collider = colliders.push();
+		e->lifetime = lifetimes.push();
+
+		e->lifetime->lifespan = randomRange(30, 75);
+
+		e->transform->setLocalScale(vec2{ 48,48 });
+
+		//e->transform->setGlobalPosition(vec2::fromAngle(randRange(0, 360)*DEG2RAD)*(rand01() * 200 + 64));
+
+		e->transform->setGlobalPosition(vec2{ pos.x - windOffset, pos.y});
+
+		//e->rigidbody->addSpin(rand01()*12-6);
+
+		e->sprite->sprite_id = sprite;
+		//e->sprite->tint = GREEN;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnWind(unsigned sprite, bool isScaled = true)
+	{
+		auto e = entities.push();
+
+		e->transform = transforms.push();
+		e->rigidbody = rigidbodies.push();
+		e->collider = colliders.push();
+		e->wind = winds.push();
+		e->sprite = sprites.push();
+
+		e->rigidbody->addImpulse(vec2{ -250, 0 });
+
+		e->lifetime = lifetimes.push();
+		e->lifetime->lifespan = randomRange(1, 10);
+
+		e->transform->setLocalScale({ randomRange(3, 6), 1 });
+		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, 0) });
+
+		e->sprite->sprite_id = sprite;
+		//e->sprite->tint = WHITE;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
+		return e;
+	}
+
 	ObjectPool<Entity>::iterator spawnRock(unsigned sprite, bool isScaled = true)
 	{
 		auto e = entities.push();
 
+		e->rock = rocks.push();
 		e->transform = transforms.push();
 		//e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
@@ -169,6 +233,31 @@ public:
 
 		e->sprite->sprite_id = sprite;
 		//e->sprite->tint = GREEN;
+
+		if (isScaled) {
+			e->transform->setBeAffectedByScale();
+		}
+
+		return e;
+	}
+
+	ObjectPool<Entity>::iterator spawnEgg(unsigned sprite, vec2 pos, bool isScaled = true)
+	{
+		auto e = entities.push();
+
+		e->egg = eggs.push();
+		e->transform = transforms.push();		
+		e->sprite = sprites.push();
+		e->lifetime = lifetimes.push();
+
+		e->lifetime->lifespan = 15.f;
+
+		e->egg->myPos = pos;
+
+		e->transform->setLocalScale(vec2{ 8,12 });
+		e->transform->setGlobalPosition(vec2{ pos.x, pos.y });
+		
+		e->sprite->sprite_id = sprite;
 
 		if (isScaled) {
 			e->transform->setBeAffectedByScale();
@@ -196,7 +285,7 @@ public:
 		return e;
 	}
 
-	ObjectPool<Entity>::iterator spawnAnimal(unsigned sprite, unsigned font = NULL, bool isScaled = true)
+	ObjectPool<Entity>::iterator spawnAnimal(unsigned sprite, unsigned font = NULL, vec2 pos = { 0, 0 }, bool isScaled = true)
 	{
 		auto e = entities.push();
 
@@ -212,7 +301,11 @@ public:
 
 		e->transform->setLocalScale(vec2{ 30,20 });
 
-		e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, -100) });
+		if (pos == vec2{ 0, 0 }) {
+			e->transform->setGlobalPosition(vec2{ randomRange(-1500, 1500), randomRange(-800, -100) });
+		}
+		else
+			e->transform->setGlobalPosition(pos);
 
 		e->text->sprite_id = font;
 		e->text->offset = vec2{ -24,-24 };

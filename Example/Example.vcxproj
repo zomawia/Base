@@ -130,12 +130,15 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="constded.h" />
+    <ClInclude Include="Egg.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="Rock.h" />
     <ClInclude Include="Tree.h" />
+    <ClInclude Include="Wind.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

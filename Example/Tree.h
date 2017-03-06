@@ -7,7 +7,6 @@ using namespace base;
 class Tree {
 	bool isPaired;
 public:	
-	//ObjectPool<Animal>::iterator myAnimal;
 	
 	float growSpeed;
 	float scale;
@@ -21,10 +20,6 @@ public:
 	}
 	void setIsPaired(bool ok) { isPaired = ok; }
 	bool getIsPaired() { return isPaired; }
-
-	//void setMyAnimal(ObjectPool<Animal>::iterator animal) {
-	//	myAnimal = animal;
-	//}
 
 	unsigned int *getName() const { return name; };
 };

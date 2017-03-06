@@ -22,6 +22,9 @@ class MenuState : public BaseState
 	bool backGroundFinishedMoving;
 	bool runOnce;
 
+	enum ButtonState { PLAY, TERM, PEPE };
+	ButtonState buttonState;
+
 public:	
 	virtual void init() {	
 
@@ -40,7 +43,6 @@ public:
 		spr_cursor = sfw::loadTextureMap("../res/cursor.png");
 
 		spr_title = sfw::loadTextureMap("../res/gameTitle.png");
-
 	}
 
 	virtual void play() {
@@ -54,21 +56,28 @@ public:
 
 		factory.spawnController(spr_cursor, spr_font);
 
+		buttonState = PEPE;
+
 		backGroundFinishedMoving = false;
 		runOnce = false;
 	}
 
 	virtual void stop()
 	{
-
+		buttonState = PEPE;
 	}
 
-	virtual size_t next() const {
-		if (sfw::getKey('P') || sfw::getKey(KEY_ENTER))
+	virtual size_t next() const {		
+		if (sfw::getKey('P') || sfw::getKey(KEY_ENTER) || buttonState == PLAY) {			
 			return ENTER_GAME;
+		}
 
-		if (sfw::getKey('E') || sfw::getKey(KEY_ESCAPE))
+		if (sfw::getKey('E') || sfw::getKey(KEY_ESCAPE) || buttonState == TERM ) {			
 			return EXIT_MENU;
+		}
+
+		if (buttonState == PEPE)
+			return MENU;
 
 		return MENU;
 	}
@@ -159,16 +168,16 @@ public:
 						auto cd = base::ColliderTest(&it->transform, &it->collider, &bit->transform, &bit->collider);
 
 						// if there was a collision,
-						if (cd.result() && it->button && bit->controller && bit->controller->isClicked == true)
+						if (cd.result() && bit->button && it->controller && it->controller->isClicked == true)
 						{
-							if (it->button == buttonPlay->button) {
-								
-								printf("next\n");
+							if (bit->button == buttonPlay->button) {
+								buttonState = PLAY;
+								//printf("next\n");
 							}
 
-							else if (it->button == buttonExit->button) {
-								
-								printf("strepcontext\n");
+							else if (bit->button == buttonExit->button) {
+								buttonState = TERM;
+								//printf("strepcontext\n");
 							}
 
 							// condition for dynamic resolution

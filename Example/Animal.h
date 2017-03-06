@@ -14,7 +14,7 @@ class Animal {
 public:
 	enum aState
 	{
-		STABLE, MOVING, EATING, PROBE 
+		STABLE, MOVING, EATING, PROBE, EGGING
 	};
 	aState animalState;
 	int dir;
@@ -26,18 +26,19 @@ public:
 	float weight;
 	vec2 scale;
 	float walkRange;
+	bool layedEgg = false;
 
-	unsigned int *name;
+	//unsigned int *name;
 	
-	Animal(float moveSpd = 20, float eat = .55f, float m_weight = 10,
+	Animal(float moveSpd = 15, float eat = .55f, float m_weight = 10,
 		vec2 m_scale = { 30,20 }, float m_range = 300, float sTimer = 0)
 		: moveSpeed(moveSpd), eatSpeed(eat), weight(m_weight), scale(m_scale) ,
 		walkRange(m_range), atTree(false), myDest(vec2{NULL,NULL}), goingRandom(false),
 		animalState(STABLE), dir(0) {};
 
-	void setName(unsigned int *a_name) {
-		name = a_name;
-	}
+	//void setName(unsigned int *a_name) {
+	//	name = a_name;
+	//}
 
 	char* getStateToChar() { 
 		char* retval;
@@ -51,7 +52,10 @@ public:
 			break;
 		case PROBE:
 			retval = "PROBE";
-			break;		
+			break;
+		case EGGING:
+			retval = "EGGING";
+			break;
 		case STABLE:
 		default:
 			retval = "STABLE";
@@ -203,13 +207,40 @@ public:
 		}
 	}
 
+	bool isAnotherAnimalClose(const ObjectPool<Transform>::iterator &me, const ObjectPool<Transform>::iterator &animal) {
+		vec2 mePos = me->getGlobalPosition();
+		vec2 otherPos = animal->getGlobalPosition();
+		float closeEnough = dist(mePos, otherPos);
+
+		if (closeEnough < 300.f) {			
+			return true;
+		}
+		else return false;
+	}
+
+	void processEgging(const ObjectPool<Transform>::iterator &me, const ObjectPool<Transform>::iterator &animal) {
+		if (scale.x > 60) {
+			if (isAnotherAnimalClose(me, animal)) {
+				animalState = EGGING;
+			}
+		}
+
+		if (animalState == EGGING && layedEgg == true) {
+			animalState = STABLE;
+		}
+	}
+
 	bool shouldThisAnimaBeEuthanisedOrBePutDeathPermanently(){
 		if (scale.x > 100) return true;
 		else return false;
 	}
 
-	void canLayEgg() {}
-	void LayEgg() {}
+	bool canLayEgg() {
+		if (animalState == EGGING && layedEgg == false) {
+			return true;
+		}
+		else return false;
+	}
 
-	unsigned int *getName() const { return name; };
+	//unsigned int *getName() const { return name; };
 };
