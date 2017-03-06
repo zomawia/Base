@@ -129,6 +129,7 @@
     <ClInclude Include="Animal.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraController.h" />
+    <ClInclude Include="constded.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameState.h" />

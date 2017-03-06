@@ -2,6 +2,7 @@
 // zomawia@gmail.com
 
 #include "sfwdraw.h"
+#include "constded.h"
 #include "GameState.h"
 #include "MenuState.h"
 #include <time.h>
@@ -18,53 +19,56 @@ void main()
 
 	srand(time(0));
 	
-	MenuState ms;
-
-	ms.init(); // called once
-
-	ms.play(); // Should be called each time the state is transitioned into
-
-	while (sfw::stepContext())
-	{
-		ms.step(); // called each update
-		ms.draw(); // called each update
-
-				   //gs.next(); Determine the ID of the next state to transition to.
-	}
-
-	ms.stop(); // should be called each time the state is transitioned out of
-
-	ms.term(); // called once
-
-
-	sfw::termContext();
-
-}
-
-void main2()
-{
-	sfw::initContext(1600U, 900);
-
-	srand(time(0));
+	APP_STATE states = ENTER_MENU;
 
 	GameState gs;
 	MenuState ms;
 
-	gs.init(); // called once
+	bool quit = false;
 
-	gs.play(); // Should be called each time the state is transitioned into
+	ms.init(); // called once
+	gs.init();
 
-	while (sfw::stepContext())
+	 // Should be called each time the state is transitioned into
+
+	while (sfw::stepContext() && quit == false)
 	{
-		gs.step(); // called each update
-		gs.draw(); // called each update
+		switch (states) {
+		case ENTER_MENU:			
+			ms.play();
 
-		//gs.next(); Determine the ID of the next state to transition to.
+		case MENU:
+			ms.step();
+			ms.draw();
+			states = (APP_STATE)ms.next();
+			break;
+
+		case EXIT_MENU:
+			ms.stop();
+			ms.term();
+			states = EXIT;
+			break;
+
+		case ENTER_GAME:
+			ms.stop();
+			ms.term();
+			gs.play();
+
+		case GAME:
+			gs.step();
+			gs.draw();
+			states = (APP_STATE)gs.next();
+			break;
+		
+		case EXIT: quit = true;
+
+
+		}
 	}
 
-	gs.stop(); // should be called each time the state is transitioned out of
+	//ms.stop(); // should be called each time the state is transitioned out of
 
-	gs.term(); // called once
+	//ms.term(); // called once
 
 
 	sfw::termContext();

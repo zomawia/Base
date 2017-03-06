@@ -128,9 +128,9 @@ public:
 		e->rigidbody = rigidbodies.push();
 		e->sprite = sprites.push();
 		e->collider = colliders.push();
-		//e->lifetime = lifetimes.push();
+		e->lifetime = lifetimes.push();
 
-		//e->lifetime->lifespan = 20.f;
+		e->lifetime->lifespan = randomRange(30, 75);
 
 		e->transform->setLocalScale(vec2{ 48,48 });
 		
@@ -207,7 +207,8 @@ public:
 		e->collider = colliders.push();
 		e->text = texts.push();
 
-		//e->lifetime = lifetimes.push();
+		e->lifetime = lifetimes.push();
+		e->lifetime->lifespan = randomRange(30, 75);
 
 		e->transform->setLocalScale(vec2{ 30,20 });
 

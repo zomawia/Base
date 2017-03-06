@@ -52,11 +52,6 @@ public:
 
 		background = factory.spawnStaticImage(spr_space, 0, -450, 3200, 1800);
 
-		factory.spawnStaticImage(spr_animal, -200, -650, 120, 100);
-		factory.spawnStaticImage(spr_animal, -800, -520, 110, 95);
-		factory.spawnStaticImage(spr_tree1, 120, -815, 150, 150);
-		factory.spawnStaticImage(spr_tree2, 700, -640, 140, 140);
-
 		factory.spawnController(spr_cursor, spr_font);
 
 		backGroundFinishedMoving = false;
@@ -68,7 +63,15 @@ public:
 
 	}
 
-	virtual size_t next() const { return 1; }
+	virtual size_t next() const {
+		if (sfw::getKey('P'))
+			return ENTER_GAME;
+
+		if (sfw::getKey('E') || sfw::getKey(KEY_ESCAPE))
+			return EXIT_MENU;
+
+		return MENU;
+	}
 
 
 	// update loop, where 'systems' exist
@@ -79,7 +82,7 @@ public:
 
 		float posX = background->transform->getGlobalPosition().x;
 		float posY = background->transform->getGlobalPosition().y;
-		printf("%f\n", posY);
+		//printf("%f\n", posY);
 
 		if (posY > -800) {
 			background->transform->setGlobalPosition({ posX, posY - 75 * dt });
@@ -89,6 +92,11 @@ public:
 		}
 
 		if (backGroundFinishedMoving == true && runOnce == false) {
+			factory.spawnStaticImage(spr_animal, -200, -650, 120, 100);
+			factory.spawnStaticImage(spr_animal, -800, -520, 110, 95);
+			factory.spawnStaticImage(spr_tree1, 120, -815, 150, 150);
+			factory.spawnStaticImage(spr_tree2, 700, -640, 140, 140);
+			
 			buttonPlay = factory.spawnButton(spr_button, spr_HUDfont, -500, -90, 12, 14, "PLAY (P)");
 			buttonPlay->transform->setLocalScale({ 140, 80 });
 			buttonPlay->button->tint = WHITE;
@@ -101,6 +109,8 @@ public:
 
 			runOnce = true;
 		}
+
+
 
 		for (auto it = factory.begin(); it != factory.end();) // no++!
 		{
@@ -115,6 +125,9 @@ public:
 
 				e.controller->poll(&e.transform, worldMouse, dt);
 			}
+
+			if (e.transform && e.rigidbody)
+				e.rigidbody->integrate(&e.transform, dt);
 
 			if (e.cameraControllers) {
 				e.cameraControllers->poll(&currentCamera->transform, &currentCamera->rigidbody);
@@ -148,13 +161,13 @@ public:
 						// if there was a collision,
 						if (cd.result() && it->button && bit->controller && bit->controller->isClicked == true)
 						{
-							if (it->button == buttonPlay->button || sfw::getKey('P')) {
-								next();
+							if (it->button == buttonPlay->button) {
+								
 								printf("next\n");
 							}
 
-							else if (it->button == buttonExit->button || sfw::getKey('E')) {
-								!sfw::stepContext();
+							else if (it->button == buttonExit->button) {
+								
 								printf("strepcontext\n");
 							}
 

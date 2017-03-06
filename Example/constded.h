@@ -1,0 +1,8 @@
+#pragma once
+
+enum APP_STATE
+{
+	ENTER_MENU, MENU, EXIT_MENU,
+	ENTER_GAME, GAME, EXIT_GAME, 
+	PAUSE_GAME,	EXIT
+};

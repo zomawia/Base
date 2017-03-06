@@ -11,6 +11,7 @@ class GameState : public BaseState
 	unsigned spr_space, spr_gras1, spr_gras2, 
 		spr_tree1, spr_tree2, spr_rock1, spr_rock2,	spr_animal, spr_font,
 		spr_HUDfont, spr_button, spr_cursor;
+
 	ObjectPool<Entity>::iterator currentCamera;
 	ObjectPool<Entity>::iterator buttonAnimal;
 	ObjectPool<Entity>::iterator buttonTree;
@@ -84,7 +85,12 @@ public:
 
 	// should return what state we're going to.
 	// REMEMBER TO HAVE ENTRY AND STAY states for each application state!
-	virtual size_t next() const { return 0; }
+	virtual size_t next() const { 
+		if (sfw::getKey(KEY_ESCAPE))
+			return MENU;
+		
+		return GAME; 
+	}
 
 
 	// update loop, where 'systems' exist
@@ -94,7 +100,7 @@ public:
 
 		// maybe spawn some asteroids here.		
 
-		for(auto it = factory.begin(); it != factory.end();) // no++!
+		for (auto it = factory.begin(); it != factory.end();) // no++!
 		{
 			bool del = false; // does this entity end up dying?
 			auto &e = *it;    // convenience reference
@@ -109,13 +115,11 @@ public:
 				e.rigidbody->integrate(&e.transform, dt);
 
 			// controller update
-			if (e.controller)
-			{				
+			if (e.controller) {				
 				vec2 screenMouse = { sfw::getMouseX(), sfw::getMouseY() };
 				vec2 worldMouse = currentCamera->camera->getScreenPointToWorldPoint(&currentCamera->transform, screenMouse);				
 
 				e.controller->poll(&e.transform, worldMouse, dt);
-
 			}
 
 			if (e.cameraControllers) {
