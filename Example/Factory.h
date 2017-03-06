@@ -63,7 +63,7 @@ public:
 		e->collider = colliders.push();
 
 		e->button->setString(text);
-
+		e->button->tint = WHITE;
 		e->transform->setLocalScale(vec2{ 76,76 });
 
 		e->button->sprite_id = sprite;
@@ -94,7 +94,7 @@ public:
 		e->text->sprite_id = font;
 		e->text->offset = vec2{ -24,-24 };
 		e->text->off_scale = vec2{.5f,.5f};
-		e->text->setString("assblast");
+		//e->text->setString("assblast");
 
 		e->transform->setLocalScale(vec2{12,12});
 
